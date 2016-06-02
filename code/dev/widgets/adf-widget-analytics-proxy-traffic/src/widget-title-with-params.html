@@ -1,0 +1,32 @@
+<h3 class=panel-title>{{definition.title}}
+  <span ng-if="!!definition.config.domain">
+      (<strong> {{definition.config.domain.domain_name}}</strong>)
+  </span>
+ <span class=pull-right>
+<a href title="reload widget content" ng-if=widget.reload ng-click=reload()>
+<i class="glyphicon glyphicon-refresh"></i>
+</a>
+<a href title="Change Widget Location" class=adf-move ng-if=editMode> <i class="glyphicon glyphicon-move"></i> </a>
+ <a href title="Collapse Widget" ng-show="options.collapsible && !widgetState.isCollapsed" ng-click="widgetState.isCollapsed = !widgetState.isCollapsed">
+ <i class="glyphicon glyphicon-minus"></i>
+ </a>
+   <a href title="Expand Widget" ng-show="options.collapsible && widgetState.isCollapsed" ng-click="widgetState.isCollapsed = !widgetState.isCollapsed">
+   <i class="glyphicon glyphicon-plus"></i>
+   </a>
+     <a href title="Edit Widget Configuration" ng-click=edit() ng-if=editMode>
+     <i class="glyphicon glyphicon-cog"></i>
+     </a>
+     <a href title="Fullscreen Widget" ng-click=openFullScreen() ng-show=options.maximizable> <i class="glyphicon glyphicon-fullscreen"></i>
+      </a>
+       <a href title="Remove Widget" ng-click=remove() ng-if=editMode> <i class="glyphicon glyphicon-remove"></i>
+        </a>
+       </span>
+</h3>
+<small ng-if="definition.config.filters.count_last_day" >
+  Last {{definition.config.filters.count_last_day}} Day
+</small>
+<span class="widget_filters_info" ng-show="!!definition.config.filters[index.key]" ng-repeat="index in [{key:'os',title:'OS'},{key:'country',title:'Сountry'},{key:'device',title:'Device'}]">
+  <small ng-if="!!definition.config.filters[index.key]&& definition.config.filters[index.key]!=='-'">&nbsp;{{index.title}}: {{definition.config.filters[index.key]}}&nbsp;</small>
+</span>
+
+<span>

@@ -1,0 +1,33 @@
+.widget {
+  width: 100%;
+  .filter-time-period {
+    display: none;
+  }
+  .reports_charts_title {
+    display: none;
+  }
+}
+
+// change  columns width for modal window "Add new widget"
+@media (min-width: 768px) {
+  .dl-horizontal dt {
+    width: 250px;
+  }
+  .dl-horizontal dd {
+    margin-left: 260px;
+  }
+}
+
+.bluetriangletech {
+  max-height: 395px;
+  overflow: hidden;
+  & iframe {
+    border: 0px inset;
+    min-height: 450px;
+    &.bluetriangletech {
+      &--traffic-info {
+        min-height: 240px;
+      }
+    }
+  }
+}

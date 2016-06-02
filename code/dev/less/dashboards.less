@@ -1,0 +1,113 @@
+section[drawer] .side-menu .dashboard_menu .side-menu-item.item-title {
+  a {
+    color: @app-side-menu-text-color;
+  }
+}
+
+.dashboard {
+  padding: 2px;
+  .column {
+    padding: 3px;
+  }
+  .panel {
+    margin-bottom: 6px;
+    &-body {
+      margin: 5px;
+    }
+  }
+}
+
+// button size into dashboard title
+.dashboard__title {
+  .btn-link {
+    font-size: 28px !important;
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+    padding-top: 10px !important;
+  }
+}
+
+// dasboard structure select
+.dashboard-structure-select {
+  &-item {
+    display: block;
+    padding: 5px;
+    input[type="radio"] {
+      cursor: pointer;
+    }
+    input,
+    label {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+  .active {
+    color: @app-color-blue-100;
+  }
+}
+
+.icon-structure {
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: top;
+  content: ' ';
+  width: 94px;
+  height: 39px;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 20px;
+  &.active,
+  &:hover {
+    background-position: 0 -39px;
+  }
+  &--12 {
+    background-image: url('../images/columns/12-sprite.png');
+  }
+  &--8-4 {
+    background-image: url('../images/columns/8-4-sprite.png');
+  }
+  &--6-6 {
+    background-image: url('../images/columns/6-6-sprite.png');
+  }
+  &--4-4-4 {
+    background-image: url('../images/columns/4-4-4-sprite.png');
+  }
+  &--3-3-3-3 {
+    background-image: url('../images/columns/3-3-3-3-sprite.png');
+  }
+}
+
+.dashboard-preview-background{
+  width: 100%;
+  min-height: 90vh;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../images/background-dashboard.png')
+}
+
+body {
+    overflow-y: hidden;
+}
+
+@-moz-document url-prefix() {  
+  section[drawer] .side-menu .side-menu-item {
+     padding-left: 20px;
+  }
+  
+  .paper-header .navbar .navbar-inner .navbar-header .ng-isolate-scope .form-control.ng-pristine.ng-untouched.ng-valid.ng-valid-editable {
+    position: relative;
+    top: 12px;
+  }
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    section[drawer] .side-menu .side-menu-item {
+     padding-left: 20px;
+    }
+}
+@supports (-ms-accelerator:true) {
+    section[drawer] .side-menu .side-menu-item {
+     padding-left: 20px;
+    }
+}

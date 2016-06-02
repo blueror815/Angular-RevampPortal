@@ -1,0 +1,91 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Top Objects Reports</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <div domain-select ng-model="domain" on-select="onDomainSelected()" select-one="true"></div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div class="row">
+            <div class="col-md-12">
+              <div top-requests
+                   fl-os="os"
+                   fl-device="devices"
+                   fl-country="countries"
+                   ng-domain="domain"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div top-referer
+                   fl-os="os"
+                   fl-device="devices"
+                   fl-country="countries"
+                   ng-domain="domain"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div top-cache-miss
+                   fl-os="os"
+                   fl-device="devices"
+                   fl-country="countries"
+                   ng-domain="domain"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div top-404
+                   fl-os="os"
+                   fl-device="devices"
+                   fl-country="countries"
+                   ng-domain="domain"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div top-5xx
+                   fl-os="os"
+                   fl-device="devices"
+                   fl-country="countries"
+                   ng-domain="domain"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div top-failed
+                   fl-os="os"
+                   fl-device="devices"
+                   fl-country="countries"
+                   ng-domain="domain"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,12 @@
+<div class="col-md-12">
+  <div class="alert alert-info" ng-if="!config.domain">
+    Please click on <i class="glyphicon glyphicon-cog"></i> icon to configure the widget
+  </div>
+  <div class="alert alert-info" ng-if="config.domain && !_data && !_loading">
+    No data to display
+  </div>
+  <div class="alert alert-info" ng-if="_loading">
+    <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>&nbsp; Loading...
+  </div>
+  <div id="canvas-svg-gbt{{elId}}"></div>
+</div>

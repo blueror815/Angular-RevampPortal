@@ -1,0 +1,353 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  padding-top: 60px;
+}
+
+.main-layout {
+  overflow-x: auto;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.page-content {
+  min-height: 100%;
+}
+
+.page-inner {
+  //padding-top: 20px;
+  //position: relative;
+  background-color: @app-color-grey-200;
+}
+
+.layout {
+  height: 100%;
+}
+
+.page-title {
+  margin-bottom: 24px;
+}
+
+section[main] {
+  overflow: auto;
+  background-color: @app-color-grey-200;
+}
+
+.max-height-pre {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.log-details {
+  cursor: pointer;
+  &:hover {
+    padding-left: 2px;
+  }
+}
+
+.strong {
+  font-weight: bold;
+}
+
+.spin {
+  -webkit-animation: fa-spin 1s infinite linear;
+  animation: fa-spin 1s infinite linear;
+}
+
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+.sortorder:after {
+  content: '\25b2';
+}
+
+.sortorder.reverse:after {
+  content: '\25bc';
+}
+
+.margin-top {
+  margin-top: 2em;
+}
+
+.margin-sm-top-bottom {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+table {
+  table-layout: fixed !important;
+}
+
+table {
+  th {}
+  th.thin {
+    width: 70px;
+  }
+  th.actions {
+    width: 120px;
+  }
+  tbody {
+    tr.disabled {
+      &>td,
+      &>th {
+        color: @app-color-text-disabled;
+        .spin {
+          color: @app-color-grey;
+        }
+      }
+    }
+    tr.loading {
+      &>td,
+      &th {
+        cursor: progress;
+      }
+    }
+    .actions {
+      a {
+        margin-right: 10px;
+      }
+      .not-active {
+        opacity: 0.65;
+      }
+    }
+    .company-names,
+    .source-name {
+      white-space: normal;
+      word-break: break-word;
+      max-height: 50px;
+    }
+  }
+}
+
+.ui-select-multiple.ui-select-bootstrap,
+input.ui-select-search {
+  max-width: 550px;
+}
+
+.select2-container {
+  min-width: 300px;
+}
+
+select.form-control {
+  max-width: 550px;
+}
+
+select.form-control.fixed {
+  width: 150px;
+}
+
+select.form-control.fixed135 {
+  width: 135px;
+}
+
+select.form-control.fixed155 {
+  width: 155px;
+}
+
+select.form-control.fixed175 {
+  width: 175px;
+}
+
+input.form-control {
+  max-width: 550px;
+}
+
+.usage-report .form-group {
+  margin-bottom: 6px;
+}
+
+.usage-report div.form-control {
+  height: 30px;
+  padding: 4px 8px;
+}
+
+.usage-report .form-horizontal .control-label {
+  padding-top: 5px;
+}
+
+.usage-report .panel-title {
+  font-size: 14px;
+}
+
+.usage-report a {
+  cursor: pointer;
+}
+
+.popover {
+  z-index: 999;
+}
+
+table tbody tr td {
+  max-width: 300px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+table tbody tr td.uppercase {
+  text-transform: uppercase;
+}
+
+h1.signup {
+  margin-top: auto;
+  color: @app-color-grey-logo;
+}
+
+alert-list {
+  position: fixed;
+  z-index: 999;
+  left: 50%;
+  top: 70px;
+  alert {
+    position: relative;
+    left: -50%;
+    min-width: 200px;
+  }
+}
+
+.list-input {
+  border: none;
+  background-color: transparent;
+}
+
+
+/* To hide "Powered by Ace" label in the JSON editor */
+
+a.poweredBy {
+  display: none;
+}
+
+input[type="radio"] {
+  margin-left: 20px;
+}
+
+input[type="checkbox"] {
+  margin-left: 20px;
+}
+
+.section-edit-company {
+  padding-bottom: 30px;
+}
+
+//
+textarea {
+  &.form-control {
+    // font-family: Courier;
+    max-width: 550px;
+  }
+  &.text--courier {
+    min-height: 30vh;
+    font-size: smaller;
+  }
+}
+
+.text--courier {
+  font-family: Courier;
+}
+
+// Users List Page
+.table {
+  &.users-list {
+    & .status-2fa {
+      // TODO: choose color
+      // &-enabled {
+      //   color: @app-color-green;
+      // }
+      // &-disabled {
+      //   color: @app-color-red;
+      // }
+    }
+  }
+}
+
+form {
+  & .error-messages {
+    display: none;
+    opacity: 1;
+    line-height: 0%;
+    transition: 0.4s linear all;
+  }
+  &.ng-invalid {
+    &.ng-submitted {
+      & .error-messages {
+        display: block;
+        transition: 0.4s linear all;
+        &.ng-inactive {
+          line-height: 50%;
+          opacity: 0;
+        }
+        &.ng-active {
+          line-height: 100%;
+          opacity: 1;
+        }
+      }
+    }
+  }
+  & .has-error .error-messages {
+    display: block;
+    transition: 0.4s linear all;
+    &.ng-inactive {
+      line-height: 50%;
+      opacity: 0;
+    }
+    &.ng-active {
+      display: block;
+      line-height: 100%;
+      opacity: 1;
+    }
+  }
+  & .error-messages {
+    color: @app-color-red;
+    transition: 0.4s linear all;
+    &.alert {
+      &-text {
+        transition: 1s linear all;
+        color: @app-color-red;
+        &.ng-enter {
+          color: @app-color-blue;
+          &.ng-enter-active {
+            color: @app-color-green;
+          }
+        }
+        &.ng-leave {
+          color: @app-color-green;
+          &.ng-leave-active {
+            color: @app-color-green;
+          }
+        }
+      }
+    }
+    &.ng-inactive {
+      line-height: 50%;
+      opacity: 0;
+    }
+    &.ng-active {
+      line-height: 100%;
+      opacity: 1;
+    }
+  }
+}

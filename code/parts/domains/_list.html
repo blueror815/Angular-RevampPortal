@@ -1,0 +1,152 @@
+<!-- Note that element contain ui-view child page will be added here -->
+<script type="text/ng-template" id="confirmModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete domain
+    <strong>{{model.domain_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+  </div>
+</script>
+
+<script type="text/ng-template" id="confirmUpdateModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to update domain configuration
+    <strong>{{model.domain_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+  </div>
+</script>
+
+<script type="text/ng-template" id="confirmPublishModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to publish domain configuration
+    <strong>{{model.domain_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+  </div>
+</script>
+
+<div class="container-fluid" ui-view="page">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        Domains List
+      </h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <a ui-sref=".new" class="btn btn-success" ng-disabled="_loading">
+                  <i class="glyphicon glyphicon-plus"></i>&nbsp;
+                  Add New Domain
+                </a>
+              </div>
+
+              <div class="pull-right">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <label for="search">Search:&nbsp;</label>
+                    <input type="text" class="form-control" id="search" placeholder="" ng-model="filter.filter.domain_name"
+                           ng-change="checkFilterPage()">&nbsp;&nbsp;
+                    <i class="glyphicon glyphicon-remove" ng-show="filter.filter != ''"
+                       ng-click="filter.filter = ''"></i>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-info" ng-if="records.length == 0 && !_loading">
+            Currently there are no domains registered in the system
+          </div>
+          <div class="alert alert-info" ng-if="_loading">
+            <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp;
+            Loading...
+          </div>
+          <crud-pagination></crud-pagination>
+          <table class="table">
+            <thead>
+            <tr>
+              <th>
+                <a href="" ng-click="order('domain_name')">Name</a>
+                <span class="sortorder" ng-show="filter.predicate === 'domain_name'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th>
+                <a href="" ng-click="order('cname')">CNAME</a>
+                <span class="sortorder" ng-show="filter.predicate === 'cname'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th>
+                <a href="" ng-click="order('updated_at')">Last Update</a>
+                <span class="sortorder" ng-show="filter.predicate === 'updated_at'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th class="thin">Status</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+              ng-repeat="item in filteredRecords | limitTo:filter.limit:filter.skip track by $index">
+              <td>{{item.domain_name}}</td>
+              <td>{{item.cname}}</td>
+              <td>{{item.updated_at | date : 'MMM dd, yyyy H:mm:ss a'}}</td>
+              <td>
+                <div domain-staging-status ng-id="item.id"></div>
+              </td>
+              <td class="actions">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>
+                <a ui-sref=".edit({id: item.id})" ng-if="!item.loading" tooltip="Edit domain">
+                  <i class="glyphicon glyphicon-pencil"></i>
+                </a>
+                <a ui-sref=".advanced({id: item.id})" ng-if="!item.loading" tooltip="Advanced edit domain">
+                  <i class="glyphicon glyphicon-cog"></i>
+                </a>
+                <a href="" ng-if="!item.loading" ng-click="deleteDomain(item)" tooltip="Delete domain">
+                  <i class="glyphicon glyphicon-trash"></i>
+                </a>
+                <a href="#/reports/proxy" ng-if="!item.loading" ng-click="storeToStorage(item)" tooltip="Stats">
+                  <i class="glyphicon glyphicon-stats"></i>
+                </a>
+                <a ui-sref=".versions({id: item.id})" ng-if="!item.loading" tooltip="Historical versions">
+                  <i class="glyphicon glyphicon-book"></i>
+                </a>
+              </td>
+            </tr>
+            <!--<tr class="disabled loading">-->
+            <!--<td>John</td>-->
+            <!--<td>Doe</td>-->
+            <!--<td>Monday, Aug 10, 2015, 8:31 PM</td>-->
+            <!--<td class="actions">-->
+            <!--<i class="glyphicon glyphicon-refresh spin"></i>-->
+            <!--</td>-->
+            <!--</tr>-->
+            </tbody>
+          </table>
+          <hr>
+          <crud-pagination></crud-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

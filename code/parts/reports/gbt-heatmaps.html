@@ -1,0 +1,56 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Global GBT Heatmap</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <div domain-select ng-model="domain" on-select="onDomainSelect()" select-one="true"></div>
+                  </div>
+                </form>
+              </div>
+              <div class="pull-right">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <select class="form-control fixed"
+                            ng-model="delay">
+                      <option value="6">Last 6 hours</option>
+                      <option value="12">Last 12 hours</option>
+                      <option value="24">Last 24 hours</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <button class="btn btn-info" ng-click="onDomainSelect()">
+                      <i class="glyphicon glyphicon-refresh"></i>&nbsp;
+                      Update report
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div class="alert alert-info" ng-if="_loading">
+            <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp;
+            Loading...
+          </div>
+
+          <div id="tooltip-container"></div>
+          <div id="canvas-svg"></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

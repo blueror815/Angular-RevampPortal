@@ -1,0 +1,19 @@
+<form class="form-inline">
+  <div class="form-group">
+    <label for="domain">Domain</label>
+    <div domain-select id="domain" ng-model="domain" on-select="onDomainSelected()" select-one="true"></div>
+  </div>
+  <div class="form-group">
+    <select class="form-control fixed" ng-model="config.filters.count_last_hours" ng-disabled="!domain">
+      <option value="6">Last 6 Hours</option>
+      <option value="12">Last 12 Hours</option>
+      <option value="24">Last 24 Hours</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <select class="form-control fixed" ng-model="config.filters.map_type">
+      <option value="world">World</option>
+      <option value="usa">USA</option>
+    </select>
+  </div>
+</form>

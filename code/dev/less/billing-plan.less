@@ -1,0 +1,44 @@
+//
+.billing-plan {
+  border: solid 1px;
+  border-color: #F8A543;
+  margin: 5px;
+  border-radius: 3px;
+  &.current {
+    margin-top: -20px;
+  }
+  &-header {
+    color: #FFEBCD;
+    background-color: #F8A543; // @app-color-blue;
+    padding: 10px;
+  }
+  &-ammount {
+    color: green;
+  }
+  &-services {}
+  &-action {
+    padding-bottom: 20px;
+  }
+  &-details {
+    margin: 0 20px;
+  }
+  &-description {
+    min-height: 170px;
+    @media (max-width: @screen-xs-min) {
+      min-height: 50px;
+    }
+    @media (min-width: @screen-sm-min) {
+      min-height: 50px;
+    }
+    @media (min-width: @screen-md-min) {
+      min-height: 260px;
+    }
+    @media (min-width: @screen-lg-min) {
+      min-height: 140px;
+    }
+  }
+}
+.subscribe-contact-info-terms {
+  margin: -10px 0 0 47px;
+  font-weight: bold;
+}

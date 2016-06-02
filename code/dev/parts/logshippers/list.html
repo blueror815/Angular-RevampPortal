@@ -1,0 +1,169 @@
+<!-- Note that element contain ui-view child page will be added here -->
+<script type="text/ng-template" id="confirmModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete job
+    <strong>{{model.job_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<script type="text/ng-template" id="confirmUpdateModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to update job
+    <strong>{{model.job_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<script type="text/ng-template" id="confirmChangeLogShippingStateModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to change State for Job
+    <strong>{{model.job_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<div class="container-fluid" ui-view="page">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        Log Shipping Jobs
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <a ui-sref=".new" class="btn btn-success" ng-disabled="_loading">
+                  <i class="glyphicon glyphicon-plus"></i>&nbsp; Add New Log Shipping Job
+                </a>
+              </div>
+              <div class="pull-right">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <label for="search">Search:&nbsp;</label>
+                    <input type="text" class="form-control" id="search" placeholder="" ng-model="filter.filter" ng-change="checkFilterPage()">&nbsp;&nbsp;
+                    <i class="glyphicon glyphicon-remove" ng-show="filter.filter != ''" ng-click="filter.filter = ''"></i>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-info" ng-if="records.length == 0 && !_loading">
+            Currently you don't have any log shipping jobs configured in the system. You can click on "Add New Log Shipping Job" button above to configure a new log shipping task.
+          </div>
+          <div class="alert alert-info" ng-if="_loading">
+            <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp; Loading...
+          </div>
+          <crud-pagination></crud-pagination>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <a href="" ng-click="order('job_name')">Job Name</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'job_name'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th><a href="" ng-click="order('source_type')">Source</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'source_type'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th><a href="" ng-click="order('sourceName')">Source Name</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'sourceName'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th> <a href="" ng-click="order('destination_type')">Destination</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'destination_type'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th> <a href="" ng-click="order('destination_host')">Host</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'destination_host'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th>
+                  <a href="" ng-click="order('updated_at')">Last Update</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'updated_at'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th class="state">
+                  <a href="" ng-click="order('operationalModeName')">Current State</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'operationalModeName'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th>Actions</th>
+                <th class="account" ng-if="auth.isReseller() ||  auth.isRevadmin()">
+                  <a href="" ng-click="order('companyName')">Account</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'companyName'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="anchor{{::$index}}" ng-click="saveAnchorScrollIndex($index)" ng-repeat="item in filteredRecords | limitTo:filter.limit:filter.skip track by $index">
+                <td>
+                  <a ui-sref=".edit({id: item.id})" ng-if="!item.loading" uib-tooltip="Edit Job">
+                  {{item.job_name}}
+                </a>
+                </td>
+                <td>{{sourceTypes[item.source_type]}}
+                </td>
+                <td>
+                  <div class="source-name">{{item.sourceName}}</div>
+                  <!-- NOTE: it`s mapping data-->
+                </td>
+                <td>{{destinationTypes[item.destination_type]}}
+                </td>
+                <td>{{item.destination_host}}</td>
+                <td>{{getRelativeDate(item.updated_at) }}</td>
+                <td class="state">
+                  <!-- {{item.operationalModeName}} -->
+                  <div logshippers-staging-status current-state="item.operationalModeName" ng-id="item.id"></div>
+                  <!--NOTE: it`s{{item.operational_mode}}-->
+                </td>
+                <td class="actions">
+                  <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>
+                  <a ui-sref=".edit({id: item.id})" ng-if="!item.loading" uib-tooltip="Edit Job">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                  </a>
+                  <a href="" ng-if="!item.loading" ng-click="deleteJob(item)" uib-tooltip="Delete Job">
+                    <i class="glyphicon glyphicon-trash"></i>
+                  </a>
+                  <!-- “Pause With Log Piling” -->
+                  <a href="" ng-class="{'not-active':item.operational_mode=='pause'}" ng-if="!item.loading" ng-click="onChangeLogShippingState(item,'pause')" uib-tooltip="Pause With Log Piling">
+                    <i class="glyphicon glyphicon-pause"></i>
+                  </a>
+                  <!--   “Start”  -->
+                  <a href="" ng-class="{'not-active':item.operational_mode=='active'}" ng-if="!item.loading" ng-click="onChangeLogShippingState(item,'active')" uib-tooltip="Start">
+                    <i class="glyphicon glyphicon-play"></i>
+                  </a>
+                  <!-- “Stop” / “Start”  -->
+                  <a href="" ng-class="{'not-active':item.operational_mode=='stop'}" ng-if="!item.loading" ng-click="onChangeLogShippingState(item,'stop')" uib-tooltip="Stop">
+                    <i class="glyphicon glyphicon-stop"></i>
+                  </a>
+                </td>
+                <td ng-if="auth.isReseller() ||  auth.isRevadmin()">
+                  <div>{{item.companyName}}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <hr>
+          <crud-pagination></crud-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

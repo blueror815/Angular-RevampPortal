@@ -1,0 +1,12 @@
+<div class="col-md-12 top-reports-countries">
+  <!-- <h3>Top 10 Countries</h3> -->
+  <div class="alert alert-info" ng-if="!config.domain">
+    Please click on <i class="glyphicon glyphicon-cog"></i> icon to configure the widget
+  </div>
+  <div  class="alert alert-info" ng-if="config.domain&&(!country || !country.length)">
+    No data to display
+  </div>
+  <div class="auto-scroll" ng-if="country && country.length" ng-hide="!country || !country.length">
+    <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="country"></div>
+  </div>
+</div>

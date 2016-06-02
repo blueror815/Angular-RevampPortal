@@ -1,0 +1,94 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        Upload Existing CDN Configuration
+      </h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <div class="col-sm-10">
+                <div class="radio">
+                  <label>
+                    <input type="radio" ng-model="config.type" value="acc" name="configTypeRadio"> Akamai CDN Configuration
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" ng-model="config.type" value="vcc" name="configTypeRadio"> Verizon (Edgecast) CDN Configuration
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" ng-model="config.type" value="fcc" name="configTypeRadio"> Fastly CDN Configuration
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" ng-model="config.type" value="vvc" name="configTypeRadio"> Varnish VCL Configuration
+                  </label>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="pull-left">
+              <h5>Select Domain:</h5>
+              <div domain-select ng-model="domain" on-select="onDomainSelected()"></div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <div>
+              <br>
+              <h5>Optional Comment:</h5>
+              <input type="text" ng-model="config.comment" placeholder="Comment" class="form-control">
+            </div>
+            <hr>
+            <div class="form-group">
+              <div class="col-md-12">
+                <h4>Copy/paste Here The CDN/VCL Configuration To Upload:</h4>
+                <textarea ng-model="config.text" id="" style="width: 100%; height: 250px" autofocus></textarea>
+
+                <div style="margin-top: 15px">
+                  <a ui-sref="^.domains" class="btn btn-default">
+                    <i class="glyphicon glyphicon-remove"></i>&nbsp;
+                    Cancel
+                  </a>
+                  &nbsp;
+                  <button class="btn btn-danger"
+                          ng-disabled="_loading || !config.text"
+                          ng-click="import()">
+                    <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                    <i class="fa fa-save" ng-if="!_loading"></i>&nbsp;
+                    Upload
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="text/ng-template" id="confirmImportConfig.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Please confirm that you want to upload the provided configuration
+    <span ng-if="model.domain_name"> for domain <strong>{{model.domain_name}}</strong></span>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>

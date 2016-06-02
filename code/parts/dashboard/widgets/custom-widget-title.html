@@ -1,0 +1,32 @@
+<h3 class="panel-title">
+  <i class="glyphicon glyphicon-star"></i>
+  {{definition.title}}
+  <span class="pull-right">
+    <a href="" title="Reload Widget Content" ng-if="widget.reload" ng-click="reload()">
+      <i class="glyphicon glyphicon-refresh"></i>
+    </a>
+    <!-- collapse -->
+    <a href="" title="Collapse Widget" ng-show="options.collapsible && !widgetState.isCollapsed" ng-click="widgetState.isCollapsed = !widgetState.isCollapsed">
+      <i class="glyphicon glyphicon-minus"></i>
+    </a>
+    <!-- expand -->
+    <a href="" title="Expand Widget" ng-show="options.collapsible && widgetState.isCollapsed" ng-click="widgetState.isCollapsed = !widgetState.isCollapsed">
+      <i class="glyphicon glyphicon-plus"></i>
+    </a>
+    <!-- change widget location -->
+    <a href="" title="Change Widget Location" class="adf-move" ng-if="editMode">
+      <i class="glyphicon glyphicon-move"></i>
+    </a>
+    <!-- open edit mode -->
+    <a href="" title="Edit Widget Configuration" ng-click="edit()" ng-if="editMode">
+      <i class="glyphicon glyphicon-cog"></i>
+    </a>
+    <a href="" title="Fullscreen Widget" ng-click="openFullScreen()" ng-show="options.maximizable">
+     <i class="glyphicon glyphicon-fullscreen"></i>
+   </a>
+    <!-- remove widget -->
+    <a href="" title="Remove Widget" ng-click="remove()" ng-if="editMode">
+      <i class="glyphicon glyphicon-remove"></i>
+    </a>
+  </span>
+</h3>

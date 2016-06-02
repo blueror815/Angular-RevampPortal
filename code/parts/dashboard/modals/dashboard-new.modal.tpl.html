@@ -1,0 +1,34 @@
+<div class="modal-header">
+  <button type=button class="close" ng-click=closeDialog() aria-hidden=true>&times;</button>
+  <h4 class=modal-title>New Dashboard</h4> </div>
+<div class=modal-body>
+  <form role="form" name="newDashboardForm">
+    <div class=form-group>
+      <label for=dashboardTitle>Title</label>
+      <input type=text class="form-control" id=dashboardTitle ng-model="model.title" required> </div>
+    <div class="form-group">
+      <label>Structure</label>
+      <div class="dashboard-structure-select list">
+        <div class="dashboard-structure-select-item" ng-repeat="(key, structure) in structures" ng-click="model.structure=key;changeStructure(key, structure)" ng-class="{'active':key==model.structure}">
+          <input type="radio" value="{{key}}" ng-model="model.structure" ng-change="changeStructure(key, structure)">
+          <div class="icon-structure icon-structure--{{key}}" ng-class="{'active':key==model.structure}"></div>
+          <span class="dashboard-structure-select-title"> {{structure.title}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Auto-Refresh</label>
+      <select class="select2 form-control fixed175" ng-model="model.options.autorefresh">
+        <option value="1">Every 1 Minute</option>
+        <option value="5">Every 5 Minutes</option>
+        <option value="15">Every 15 Minutes</option>
+        <option value="30">Every 30 Minutes</option>
+        <option value="">No Auto-Refresh</option>
+      </select>
+    </div>
+  </form>
+</div>
+<div class=modal-footer>
+  <button type=button class="btn btn-default" ng-disabled="_isLoading" ng-click=closeDialog()>Cancel</button>
+  <button type=button class="btn btn-primary" ng-disabled="newDashboardForm.$invalid || _isLoading" ng-click="applyDialog(model)">Create</button>
+</div>

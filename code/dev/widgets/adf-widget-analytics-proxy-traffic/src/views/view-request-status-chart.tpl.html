@@ -1,0 +1,6 @@
+<div class="col-lg-12">
+  <div class="alert alert-info" ng-if="!config.domain">
+    Please click on <i class="glyphicon glyphicon-cog"></i> icon to configure the widget
+  </div>
+  <div ng-if="config.domain" request-status-chart status-codes="config.statusCode" fl-os="config.os.labels" fl-device="config.device.labels" fl-country="config.countries" ng-domain="config.domain"></div>
+</div>

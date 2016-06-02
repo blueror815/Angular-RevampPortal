@@ -1,0 +1,28 @@
+<a ui-sref-active="active" ui-sref="index.accountSettings.users" class="side-menu-item" ng-if="!userService.isUser()">
+  <i class="glyphicon glyphicon-user"></i>
+  Users
+</a>
+<a ui-sref-active="active" ui-sref="index.accountSettings.companies" class="side-menu-item" ng-if="userService.isReseller() || userService.isRevadmin()">
+  <i class="glyphicon glyphicon-briefcase"></i>
+  Companies
+</a>
+<a ui-sref-active="active" ui-sref="index.accountSettings.keys" class="side-menu-item" ng-if="!userService.isUser()">
+  <i class="glyphicon glyphicon-tags"></i>
+  API Keys
+</a>
+<a ui-sref-active="active" ui-sref="index.accountSettings.profile" class="side-menu-item">
+  <i class="glyphicon glyphicon-user"></i>
+  Update Password
+</a>
+<a ui-sref-active="active" ui-sref="index.accountSettings.2fa" class="side-menu-item">
+  <i class="glyphicon glyphicon-lock"></i>
+  Security Settings
+</a>
+<a ui-sref-active="active" ui-sref="index.accountSettings.activitylog" class="side-menu-item">
+  <i class="glyphicon glyphicon-time"></i>
+  Activity Log
+</a>
+<a ui-sref-active="active" ui-sref="index.usage.web" class="side-menu-item" ng-if="!userService.isUser()">
+  <i class="glyphicon glyphicon-signal"></i>
+  Usage Report
+</a>

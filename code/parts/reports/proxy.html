@@ -1,0 +1,93 @@
+<div class="container-fluid"
+ ng-intro-options="IntroOptionsScope"
+         ng-intro-method="stateIntro"
+         ng-intro-oncomplete="onIntroCompletedEvent"
+         ng-intro-onexit="ExitEvent"
+         ng-intro-onchange="ChangeEvent"
+         ng-intro-onbeforechange="BeforeChangeEvent"
+         ng-intro-onafterchange="AfterChangeEvent"
+         ng-intro-autostart="false">
+  <div class="row">
+    <div class="col-md-12">
+      <h2 id="title-page">Proxy Traffic Reports</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <div domain-select ng-model="domain" on-select="onDomainSelected()" select-one="true"></div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div class="row">
+            <div class="col-lg-6">
+              <div requests-chart
+                   fl-os="os.labels"
+                   fl-device="device.labels"
+                   fl-country="countries"
+                   ng-domain="domain"></div>
+            </div>
+            <div class="col-lg-6">
+              <div proxy-traffic-chart
+                   status-codes="statusCode.labels"
+                   fl-os="os.labels"
+                   fl-device="device.labels"
+                   fl-country="countries"
+                   ng-domain="domain"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-6">
+              <div http-https-chart
+                   fl-os="os.labels"
+                   fl-device="device.labels"
+                   fl-country="countries"
+                   ng-domain="domain"></div>
+            </div>
+            <div class="col-lg-6">
+              <div http-status-code-chart
+                   status-codes="statusCode.labels"
+                   fl-os="os.labels"
+                   fl-device="device.labels"
+                   fl-country="countries"
+                   ng-domain="domain"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-6">
+              <div request-status-chart
+                   status-codes="statusCode.labels"
+                   fl-os="os.labels"
+                   fl-device="device.labels"
+                   fl-country="countries"
+                   ng-domain="domain"></div>
+            </div>
+            <div class="col-lg-6">
+              <div hits-cache-chart
+                   fl-os="os.labels"
+                   fl-device="device.labels"
+                   fl-country="countries"
+                   ng-domain="domain"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

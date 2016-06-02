@@ -1,0 +1,61 @@
+<h3 style="margin-top: 0;">FBT Values Distribution Histogram</h3>
+<div class="clearfix" style="margin-bottom: 8px;">
+  <div class="pull-right">
+
+    <form class="form-inline">
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-model="delay">
+          <option value="6">Last 6 Hours</option>
+          <option value="12">Last 12 Hours</option>
+          <option value="24">Last 24 Hours</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-options="key as item for (key, item) in flCountry"
+                ng-model="country">
+          <option value="">All Countries</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-options="item for item in flOs"
+                ng-model="os">
+          <option value="">All OS</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-model="device"
+                ng-options="item for item in flDevice">
+          <option value="">All Devices</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-info" ng-click="reloadTrafficStats()" ng-disabled="_loading || !ngDomain">
+          <i class="glyphicon glyphicon-refresh"></i>&nbsp;
+          Update Report
+        </button>
+      </div>
+    </form>
+
+  </div>
+
+</div>
+
+<div class="alert alert-info" ng-if="!_loading && (!ngDomain || !traffic.labels.length)">
+  No data to display
+</div>
+<div class="alert alert-info" ng-if="_loading">
+  <i class="glyphicon glyphicon-refresh spin"></i>&nbsp;
+  Loading
+</div>
+<div ng-hide="!traffic.labels || !traffic.labels.length">
+
+  <div style="min-width: 500px; min-height: 350px" line-chart ng-data="traffic" ng-chart-options="chartOptions"></div>
+</div>

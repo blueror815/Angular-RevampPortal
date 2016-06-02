@@ -1,0 +1,41 @@
+<div class="form-group">
+  <label for="domain">Domain</label>
+  <div domain-select id="domain" ng-model="domain" on-select="onDomainSelected()" select-one="true"></div>
+</div>
+<!-- <div class="form-group" ng-if="domain">
+  <label for="domain">Filters</label>
+  <div class="form-group">
+    <div class="row">
+      <filter-generator filters-sets="config.filters" domain="domain" ng-model="filtersList"></filter-generator>
+    </div>
+  </div>
+</div> -->
+<div class="form-group from-inline">
+  <label for="domain">Filters</label>
+  <div class="form-group">
+    <!-- <label for="domain">Delay</label> -->
+    <select class="form-control fixed" ng-model="config.time_period" ng-disable="!domain">
+      <option value="1">Last 1 Day</option>
+      <option value="7">Last 7 Days</option>
+      <option value="30">Last 30 Days</option>
+    </select>
+<!--   </div>
+  <div class="form-group"> -->
+    <!--  <label for="country">Country</label> -->
+    <select id="country" class="form-control fixed" ng-options="::key as ::item for (key, item) in flCountry" ng-model="config.filters.country" ng-disable="!domain">
+      <option value="">All Countries</option>
+    </select>
+<!--   </div>
+  <div class="form-group"> -->
+    <!-- <label for="os">OS</label> -->
+    <select id="os" class="form-control fixed" ng-options="item for item in flOs.labels" ng-model="config.filters.os" ng-disable="!domain">
+      <option value="">All OS</option>
+    </select>
+<!--   </div>
+  <div class="form-group"> -->
+    <!-- <label for="device">Device</label> -->
+    <select id="device" class="form-control fixed" ng-options="item for item in flDevice.labels" ng-model="config.filters.device">
+      <option value="">All Devices</option>
+    </select>
+  </div>
+</div>

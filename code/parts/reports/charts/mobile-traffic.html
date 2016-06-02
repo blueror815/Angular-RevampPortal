@@ -1,0 +1,90 @@
+<div class="clearfix" style="margin-bottom: 8px;">
+  <div class="pull-right">
+
+    <form class="form-inline">
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-model="span">
+          <option value="1">Last 1 day</option>
+          <option value="7">Last 7 days</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-model="country"
+                ng-options="key as item for (key, item) in flCountries">
+          <option value="">All Countries</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-model="os"
+                ng-options="item for item in flOses">
+          <option value="">All OS</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-model="device"
+                ng-options="item for item in flDevices">
+          <option value="">All Devices</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-model="operator"
+                ng-options="item for item in flOperators">
+          <option value="">All Operators</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-model="network"
+                ng-options="item for item in flNetworks">
+          <option value="">All Network Types</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-info" ng-click="reload()">
+          <i class="glyphicon glyphicon-refresh"></i>&nbsp;
+          Update report
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<div class="alert alert-info" ng-if="_loading">
+  <i class="glyphicon glyphicon-refresh spin"></i>&nbsp;
+  Loading
+</div>
+
+<div ng-if="!_loading">
+  <h3 style="margin-top: 0;">Requests Per Second Graph</h3>
+  <div class="alert alert-info" ng-if="!_loading && !hits.labels.length">
+    No data to display
+  </div>
+
+  <div ng-hide="!hits.labels || !hits.labels.length">
+    <div style="min-width: 500px; min-height: 350px" line-chart ng-data="hits" ng-chart-options="hitsChartOptions"></div>
+  </div>
+
+  <hr>
+
+  <h3 style="margin-top: 10px;">Bandwidth Usage Graph</h3>
+  <div class="alert alert-info" ng-if="!_loading && !traffic.labels.length">
+    No data to display
+  </div>
+
+  <div ng-hide="!traffic.labels || !traffic.labels.length">
+    <div style="min-width: 500px; min-height: 350px" line-chart ng-data="traffic" ng-chart-options="trafficChartOptions"></div>
+  </div>
+</div>
+

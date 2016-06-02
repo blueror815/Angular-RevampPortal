@@ -1,0 +1,132 @@
+<!-- Note that element contain ui-view child page will be added here -->
+<script type="text/ng-template" id="confirm2FaDisable.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to disable Two-Factor Authentication for your user account?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<div class="container-fluid" ui-view="page">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        Two-Factor Authentication
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-info" ng-if="_loading">
+            <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp; Loading...
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <i class="glyphicon glyphicon-phone"></i>
+              <strong>Two-Factor Authentication</strong>
+              <br>
+              <div class="margin-top">
+                Two-factor authentication improves the security of your account. In addition to your normal credentials, you'll also need to provide a one time password (authentication code) when logging in. Please install
+                <a href="https://support.google.com/accounts/answer/1066447" target="_blank">Google Authenticator</a> application on your mobile device.
+              </div>
+            </div>
+            <div class="col-md-6">
+              <span class="label label-success" ng-if="twoFAEnabled">Enabled</span>
+              <span class="label label-danger" ng-if="!twoFAEnabled">Disabled</span>
+            </div>
+          </div>
+          <div class="margin-top row" ng-hide="qrImg || twoFAEnabled">
+            <div class="col-md-6">
+              <button class="btn btn-default" ng-click="init()">
+                <i class="glyphicon glyphicon-lock"></i>&nbsp; Set Up Two-Factor Authentication
+              </button>
+            </div>
+          </div>
+          <div class="margin-top row" ng-if="qrImg">
+            <div class="col-md-6">
+              <form class="form-inline" name="editForm">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <div class="input-group" ng-class="{'has-error': editForm.oneTimePassword.$invalid && editForm.oneTimePassword.$dirty}">
+                      <div class="input-group-addon">
+                        <i class="glyphicon" ng-class="oneTimePassword && 'glyphicon-ok-circle' || 'glyphicon-exclamation-sign'"></i>
+                      </div>
+                      <input type="text" class="form-control" name="oneTimePassword" id="one-time-password" placeholder="One-Time Password" ng-model="oneTimePassword" pattern="^\d+$" required>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary" ng-disabled="!oneTimePassword || _loading" ng-click="enable(oneTimePassword)">
+                    <i class="glyphicon glyphicon-ok"></i>&nbsp; Enable 2FA
+                  </button>
+                  <button type="submit" class="btn btn-default" ng-click="clearCodes()">
+                    <i class="glyphicon glyphicon-remove"></i>&nbsp; Cancel
+                  </button>
+                </div>
+                <div class="col-sm-12 form-group" ng-class="{'has-error': editForm.oneTimePassword.$invalid && editForm.oneTimePassword.$dirty}">
+                  <div class="error-messages"  ng-messages="editForm.oneTimePassword.$error" role="alert" ng-messages-multiple>
+                    <div ng-messages-include="parts/shared/error-messages.html"></div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6 text-center">
+              <h4>Please scan QR code to get your One-Time Password</h4>
+              <img ng-src="{{qrImg}}" alt="QrCode" class="img-thumbnail" />
+              <!--
+              <div class="margin-top">
+                <h4>Or manually enter code into application</h4>
+                <form class="form-inline">
+                  <div class="form-group">
+                    <input type="text" disabled ng-model="asciiCode" class="form-control" id="code">
+                  </div>
+                </form>
+              </div>
+-->
+            </div>
+          </div>
+          <div class="margin-top row" ng-show="twoFAEnabled && !showDisable">
+            <div class="col-md-6">
+              <!--<button class="btn btn-danger" ng-click="showDisablePart()">-->
+              <button class="btn btn-danger" ng-click="disable()">
+                <i class="glyphicon glyphicon-lock"></i>&nbsp; Disable Two-Factor Authentication
+              </button>
+            </div>
+          </div>
+          <!--<div class="margin-top row" ng-if="showDisable">-->
+          <!--<div class="col-md-6">-->
+          <!--<form class="form-inline">-->
+          <!--<div class="form-group">-->
+          <!--<div class="input-group">-->
+          <!--<div class="input-group-addon">-->
+          <!--<i class="glyphicon" ng-class="oneTimePassword && 'glyphicon-ok-circle' || 'glyphicon-exclamation-sign'"></i>-->
+          <!--</div>-->
+          <!--<input type="text" class="form-control" id="one-time-password" placeholder="One Time Password" ng-model="oneTimePassword">-->
+          <!--</div>-->
+          <!--</div>-->
+          <!--<button type="submit" class="btn btn-danger" ng-disabled="!oneTimePassword || _loading" ng-click="disable(oneTimePassword)">-->
+          <!--<i class="glyphicon glyphicon-ban-circle"></i>&nbsp;-->
+          <!--Disable 2FA-->
+          <!--</button>-->
+          <!--<button type="submit" class="btn btn-default" ng-click="hideDisablePart()">-->
+          <!--<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;-->
+          <!--Cancel-->
+          <!--</button>-->
+          <!--</form>-->
+          <!--</div>-->
+          <!--</div>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

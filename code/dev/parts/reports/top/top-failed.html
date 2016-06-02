@@ -1,0 +1,35 @@
+<h3>Top Objects With Unsuccessful Completion Status</h3>
+<div filter-top-objects
+     ng-hide="!ngDomain"
+     fl-os="flOs"
+     fl-country="flCountry"
+     fl-device="flDevice"
+     ng-filters="filters"
+     on-filter="loadDetails()"></div>
+<div class="alert alert-info" ng-if="!_loading && !data.labels.length">
+  No data to display
+</div>
+<div class="alert alert-info" ng-if="_loading">
+  <i class="glyphicon glyphicon-refresh spin"></i>&nbsp;
+  Loading
+</div>
+<div class="row margin-top" ng-if="ngDomain && data.labels.length">
+  <div class="col-md-12">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Path</th>
+        <th style="width: 10%;">Requests</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="item in items">
+        <td>
+          <a target="_blank" ng-href="http://{{ngDomain.domain_name}}{{item.path}}">{{item.path}}</a>
+        </td>
+        <td class="text-right">{{item.count}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<div>
+  <form class="navbar-form navbar-left flex" role="search">
+    <div class="form-group">
+      <select name="domains"
+              id="domains"
+              ng-disabled="_loading"
+              ng-model="domain"
+              ng-options="d.name for d in domains"
+              ng-change="onDomainChange()"
+              class="form-control"
+              style="width: 250px">
+        <option value="">--- Select Domain---</option>
+      </select>
+    </div>
+  </form>
+</div>

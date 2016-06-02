@@ -1,0 +1,131 @@
+<!-- Note that element contain ui-view child page will be added here -->
+<script type="text/ng-template" id="confirmModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete user
+    <strong>{{model.firstname}} {{model.lastname}} ({{model.email}})</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+
+<div class="container-fluid" ui-view="page">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        Users List
+      </h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <a ui-sref=".new" class="btn btn-success" ng-disabled="_loading">
+                  <i class="glyphicon glyphicon-plus"></i>&nbsp;
+                  Add New User
+                </a>
+              </div>
+
+              <div class="pull-right">
+                <list-filter></list-filter>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-info" ng-if="records.length == 0 && !_loading">
+            Currently you don't have any users registered in the system. You can click on "Add New User" button above to add a user.
+          </div>
+          <div class="alert alert-info" ng-if="_loading">
+            <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp;
+            Loading...
+          </div>
+          <crud-pagination></crud-pagination>
+          <table class="table users-list">
+            <thead>
+            <tr>
+              <th>
+                <a href="" ng-click="order('firstname')">First Name</a>
+                <span class="sortorder" ng-show="filter.predicate === 'firstname'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th>
+                <a href="" ng-click="order('lastname')">Last Name</a>
+                <span class="sortorder" ng-show="filter.predicate === 'lastname'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th>
+                <a href="" ng-click="order('email')">Email</a>
+                <span class="sortorder" ng-show="filter.predicate === 'email'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th>
+                <a href="" ng-click="order('role')">Role</a>
+                <span class="sortorder" ng-show="filter.predicate === 'role'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th>
+                <a href="" ng-click="order('two_factor_auth_enabled')">2FA</a>
+                <span class="sortorder" ng-show="filter.predicate === 'two_factor_auth_enabled'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th>
+                <a href="" ng-click="order('updated_at')">Last Update</a>
+                <span class="sortorder" ng-show="filter.predicate === 'updated_at'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th>
+                <a href="" ng-click="order('last_login_at')">Last Login</a>
+                <span class="sortorder" ng-show="filter.predicate === 'last_login_at'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th>Actions</th>
+              <th class="account" ng-if="auth.isReseller() ||  auth.isRevadmin()">
+                <a href="" ng-click="order('companyName')">Account</a>
+                <span class="sortorder" ng-show="filter.predicate === 'companyName'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="user in filteredRecords | limitTo:filter.limit:filter.skip track by $index" id="anchor{{::$index}}" ng-click="saveAnchorScrollIndex($index)">
+              <td>
+                <a ui-sref=".edit({id: user.user_id})" ng-if="!item.loading" uib-tooltip="Edit User Profile">
+                  {{user.firstname}}
+                </a>
+              </td>
+              <td>
+                <a ui-sref=".edit({id: user.user_id})" ng-if="!item.loading" uib-tooltip="Edit User Profile">
+                  {{user.lastname}}
+                </a>
+              </td>
+              <td>{{user.email}}</td>
+              <td>{{user.role}}</td>
+              <td>
+                <span class="status-2fa-enabled" ng-if="user.two_factor_auth_enabled==true">Enabled</span>
+                <span class="status-2fa-disabled " ng-if="!user.two_factor_auth_enabled==true">Disabled</span>
+              </td>
+              <td>{{ getRelativeDate(user.updated_at) }}</td>
+              <td>{{ user.last_login_at ? getRelativeDate(user.last_login_at) : 'Never' }}</td>
+              <td class="actions">
+                <a ui-sref=".edit({id: user.user_id})" uib-tooltip="Edit User Profile">
+                  <i class="glyphicon glyphicon-pencil"></i>
+                </a>
+                <a href="" ng-click="deleteUser(user)" uib-tooltip="Delete User">
+                  <i class="glyphicon glyphicon-trash"></i>
+                </a>
+              </td>
+              <td ng-if="auth.isReseller() ||  auth.isRevadmin()">
+                  <div class="company-names">{{user.companyName}}</div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <hr>
+          <crud-pagination></crud-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

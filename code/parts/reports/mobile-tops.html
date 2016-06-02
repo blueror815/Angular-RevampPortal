@@ -1,0 +1,312 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Mobile Top Reports</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+
+                <form class="form-inline">
+                  <div class="form-group">
+                    <div app-select ng-model="application" on-select="reload()"></div>
+                  </div>
+                </form>
+
+              </div>
+
+              <div class="pull-right">
+
+                <form class="form-inline">
+                  <div class="form-group">
+                    <select class="form-control fixed" ng-model="span">
+                      <option value="1">Last 1 Hour</option>
+                      <option value="6">Last 6 Hours</option>
+                      <option value="12">Last 12 Hours</option>
+                      <option value="24">Last 24 Hours</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <button class="btn btn-info" ng-click="reload()" ng-disabled="_loading || !application">
+                      <i class="glyphicon glyphicon-refresh"></i>&nbsp;
+                      Update Reports
+                    </button>
+                  </div>
+                </form>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-body">
+
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Top 20 Countries By Requests</h3>
+
+              <div class="alert alert-info" ng-hide="_loading || country_hits.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !country_hits.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="country_hits" ng-chart-options="hitsChartOpts"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h3>Top 20 Countries By Users</h3>
+              <div class="alert alert-info" ng-hide="_loading || country_users.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !country_users.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="country_users" ng-chart-options="usersChartOpts"></div>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Top 20 Countries By Traffic</h3>
+              <div class="alert alert-info" ng-hide="_loading || country_gbt.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !country_gbt.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="country_gbt" ng-chart-options="gbtChartOpts"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h3>Top 10 OSes By Requests</h3>
+              <div class="alert alert-info" ng-hide="_loading || os_hits.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !os_hits.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="os_hits" ng-chart-options="hitsChartOpts"></div>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Top 10 OSes By Users</h3>
+              <div class="alert alert-info" ng-hide="_loading || os_users.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !os_users.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="os_users" ng-chart-options="usersChartOpts"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h3>Top 10 OSes By Traffic</h3>
+              <div class="alert alert-info" ng-hide="_loading || os_gbt.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !os_gbt.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="os_gbt" ng-chart-options="gbtChartOpts"></div>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Top 20 Devices By Requests</h3>
+              <div class="alert alert-info" ng-hide="_loading || device_hits.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !device_hits.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="device_hits" ng-chart-options="hitsChartOpts"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h3>Top 20 Devices By Users</h3>
+              <div class="alert alert-info" ng-hide="_loading || device_users.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !device_users.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="device_users" ng-chart-options="usersChartOpts"></div>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Top 20 Devices By Traffic</h3>
+              <div class="alert alert-info" ng-hide="_loading || device_gbt.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !device_gbt.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="device_gbt" ng-chart-options="gbtChartOpts"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h3>Top 20 Providers By Requests</h3>
+              <div class="alert alert-info" ng-hide="_loading || operator_hits.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !operator_hits.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="operator_hits" ng-chart-options="hitsChartOpts"></div>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Top 20 Providers By Users</h3>
+              <div class="alert alert-info" ng-hide="_loading || operator_users.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !operator_users.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="operator_users" ng-chart-options="usersChartOpts"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h3>Top 20 Providers By Traffic</h3>
+              <div class="alert alert-info" ng-hide="_loading || operator_gbt.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !operator_gbt.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="operator_gbt" ng-chart-options="gbtChartOpts"></div>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h3>WiFi/Cellular Distribution By Requests</h3>
+              <div class="alert alert-info" ng-hide="_loading || network_hits.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !network_hits.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="network_hits" ng-chart-options="hitsChartOpts"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h3>WiFi/Cellular Distribution By Users</h3>
+              <div class="alert alert-info" ng-hide="_loading || network_users.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !network_users.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="network_users" ng-chart-options="usersChartOpts"></div>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h3>WiFi/Cellular Distribution By Traffic</h3>
+              <div class="alert alert-info" ng-hide="_loading || network_gbt.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !network_gbt.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="network_gbt" ng-chart-options="gbtChartOpts"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h3>Top 10 Domains By Requests</h3>
+              <div class="alert alert-info" ng-hide="_loading || domain_hits.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !domain_hits.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="domain_hits" ng-chart-options="hitsChartOpts"></div>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Top 10 Domains By Traffic</h3>
+              <div class="alert alert-info" ng-hide="_loading || domain_gbt.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !domain_gbt.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="domain_gbt" ng-chart-options="gbtChartOpts"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h3>Top 10 HTTP Status Codes</h3>
+              <div class="alert alert-info" ng-hide="_loading || status_code_hits.length">
+                No data to display
+              </div>
+              <div class="alert alert-info" ng-hide="!_loading">
+                <i class="glyphicon glyphicon-refresh spin"></i>&nbsp; Loading
+              </div>
+              <div ng-hide="_loading || !status_code_hits.length">
+                <div style="min-width: 480px; min-height: 350px" pie-chart ng-data="status_code_hits" ng-chart-options="hitsChartOpts"></div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

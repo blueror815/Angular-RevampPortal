@@ -1,0 +1,179 @@
+<div class="container-fluid" ui-view="page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 class="pull-left page-title">
+                Statements & Transactions
+            </h2>
+        </div>
+    </div>
+    <div class="row" ng-init="initStatement(params.id)">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2>Statement {{statement.id}}</h2>
+                            <button class="btn btn-info pull-right"
+                                    ng-disabled="_loading"
+                                    ng-click="savePdfStatement(statement.id)">
+                                Get PDF Version</button>
+                            <a ui-sref="^.statements"
+                               ng-disabled="_loading"
+                               class="btn btn-default pull-left">
+                                <i class="glyphicon glyphicon-arrow-left"></i>&nbsp;
+                                Back To List
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" ng-if="_loading">
+                    <div class="alert alert-info" ng-if="_loading">
+                        <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp;
+                        Loading...
+                    </div>
+                </div>
+                <div class="panel-body" ng-if="!_loading">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h2>Account Information</h2>
+                            <div>
+                                <div>{{statement.customer_first_name}} {{statement.customer_last_name}}</div>
+                                <div>{{statement.customer_organization}}</div>
+                                <div id="billing_statement_customer_email">{{user.email}}</div>
+                                <div class="tel" id="billing_statement_customer_phone"><span class="value">{{statement.customer_phone}}</span></div>
+
+
+                                <div class="adr">
+                                    <h3>Billing Address</h3>
+                                    <div>{{statement.customer_billing_address}}</div>
+                                    <div>{{statement.customer_billing_address_2}}</div>
+                                    <div>
+                                        <span >{{statement.customer_billing_city}}</span>,
+                                        <abbr >{{statement.customer_billing_state}}</abbr>
+                                        <span >{{statement.customer_billing_zip}}</span>
+                                    </div>
+                                    <div>{{statement.customer_billing_country}}</div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <h2 class="billing_statement_section_title" id="billing_statement_summary_section_title">Statement Summary</h2>
+                            <div class="billing_statement_section_content">
+                                <div id="billing_statement_summary_statement_date">
+                                    <span class="billing_statement_summary_label">Statement Date:</span>
+                                    <span ><abbr title="{{statement.created_at}}">{{statement.created_at | date : short}}</abbr></span>
+                                </div>
+                                <div id="billing_statement_summary_usage_period">
+                                    <span class="billing_statement_summary_label">Billing Period:</span>
+                                    <span>
+                                        <abbr title="{{statement.opened_at}}">{{statement.opened_at | date : short}}</abbr> - <abbr title="{{statement.closed_at}}">{{statement.closed_at | date : short}}</abbr>
+                                    </span>
+                                </div>
+
+                                <div id="billing_statement_summary_balance_summary">
+                                    <div id="billing_statement_summary_starting_balance">
+                                        <span class="billing_statement_summary_label">Starting Balance:</span>
+                                        <span>{{statement.starting_balance_in_cents/100 | currency}}</span>
+                                    </div>
+                                    <div id="billing_statement_summary_current_charges">
+                                        <span class="billing_statement_summary_label">Current Charges:</span>
+                                        <span>{{statement.total_in_cents/100 | currency}}</span>
+                                    </div>
+                                    <div id="billing_statement_summary_current_payments_and_credits">
+                                        <span class="billing_statement_summary_label">Payments:</span>
+                                        <span>{{statement.payments_total/100 | currency}}</span>
+                                    </div>
+                                    <div id="billing_statement_summary_balance_due">
+                                        <span class="billing_statement_summary_label">Ending Balance:</span>
+                                        <span>{{statement.ending_balance_in_cents/100 | currency}}</span>
+                                    </div>
+                                </div>
+
+                                <div id="billing_statement_summary_balance_paid">
+                                    <div id="billing_statement_summary_balance_paid_date">
+                                        <span class="billing_statement_summary_label">Balance Paid:</span>
+                                        <span class="pull-righ">{{statement.settled_at | date : short}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+
+<hr>
+                    <div class="billing_statement_section" id="billing_statement_detail_section">
+                        <h2 class="billing_statement_section_title" id="billing_statement_detail_section_title">Statement Detail</h2>
+                        <div class="billing_statement_section_content">
+                            <div class="billing_statement_detail_subsection billing_statement_subsection" id="billing_statement_detail_current_charges_subsection">
+                                <h3 class="billing_statement_detail_subsection_title billing_statement_subsection_title" id="billing_statement_detail_current_charges_title">Current Charges and Adjustments</h3>
+                                <table class="table" id="billing_statement_detail_current_charges_listing">
+                                    <thead>
+                                    <tr>
+                                        <th class="billing_statement_listing_cell_datetime">Date/Time</th>
+                                        <th class="billing_statement_listing_cell_detail">Detail</th>
+                                        <th class="billing_statement_listing_cell_money">Charge</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="transaction in statement.transactions">
+                                        <td><abbr title="{{transaction.created_at}}">{{transaction.created_at | date : 'MMM d, y h:mm:ss a'}}</abbr></td>
+                                        <td>{{transaction.memo}}</td>
+                                        <td class="billing_statement_listing_cell_money">{{transaction.amount_in_cents/100 | currency}}</td>
+                                    </tr>
+                                    <tr class="billing_statement_listing_tfoot">
+                                        <td class="billing_statement_listing_cell_totals_label" colspan="2">Totals</td>
+                                        <td class="billing_statement_listing_cell_money">{{statement.total_in_cents/100 | currency}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="billing_statement_detail_subsection billing_statement_subsection" id="billing_statement_detail_payments_credits_subsection">
+                                <h3 class="billing_statement_detail_subsection_title billing_statement_subsection_title" id="billing_statement_detail_payments_credits_title">Payments</h3>
+                                <table class="table" id="billing_statement_detail_payments_credits_listing">
+                                    <thead>
+                                    <tr>
+                                        <th class="billing_statement_listing_cell_datetime">Date/Time</th>
+                                        <th class="billing_statement_listing_cell_type">Type</th>
+                                        <th class="billing_statement_listing_cell_detail">Detail</th>
+                                        <th class="billing_statement_listing_cell_money">Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="payment in statement.payments">
+                                        <td><abbr title="{{payment.created_at}}">{{payment.created_at | date : 'MMM d, y h:mm:ss a'}}</abbr></td>
+                                        <td>CC Payment</td>
+                                        <td>
+                                            <div>{{payment.memo}}</div>
+                                            {{payment.card_number}} {{payment.card_type}} ({{payment.card_expiration}})
+                                        </td>
+                                        <td class="billing_statement_listing_cell_money">
+                                            {{payment.amount_in_cents/100 | currency}}
+                                        </td>
+                                    </tr>
+                                    <tr class="billing_statement_listing_tfoot">
+                                        <td class="billing_statement_listing_cell_totals_label" colspan="3">Totals</td>
+                                        <td class="billing_statement_listing_cell_money">{{statement.total_in_cents/100 | currency}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                    <div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

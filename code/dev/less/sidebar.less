@@ -1,0 +1,97 @@
+#drawer {
+  z-index: 999;
+}
+
+section[drawer] {
+  background-color: @app-side-menu-background;
+  #logo {
+    background-color: @app-side-menu-background-logo;
+    height: @app-top-menu-height;
+    background: transparent;
+    img {
+      margin: 8px 5px;
+      vertical-align: middle;
+      width: 50%;
+    }
+  }
+  .side-menu {
+    .side-menu-item {
+      cursor: pointer;
+      display: block;
+      height: @app-side-menu-item-height;
+      line-height: (@app-side-menu-item-height - 20);
+      padding: 10px;
+      font-size: 16px;
+      color: @app-side-menu-text-color;
+      //border-bottom: 1px solid lighten(@app-side-menu-background, 5%);
+      text-decoration: none;
+      &.selected {
+        background-color: @app-side-menu-background-selected;
+      }
+      &.active {
+        border-right: 4px solid @app-side-menu-text-color;
+      }
+      i {
+        margin: 0 10px;
+      }
+    }
+    .side-menu-sub-item {
+      display: block;
+      border-bottom: 1px solid gray;
+      padding-bottom: 5px;
+      margin-bottom: 5px;
+      margin-right: 10px;
+      margin-left: 40px;
+      color: @app-side-menu-text-color;
+      text-decoration: none;
+      &.active {
+        color: white;
+      }
+      &.introjs-showElement {
+        color:  @app-color-orange;
+      }
+      &.introjs-helperLayer {
+        background-color: @app-color-orange;
+      }
+    }
+    .side-menu-sub-item {
+      display: none;
+    }
+    .active-side-menu-item {
+      .side-menu-sub-item {
+        display: block;
+      }
+    }
+  }
+}
+
+//
+.left-menu-start {
+  display: inline-block;
+  width: 5px;
+  text-align: center;
+  i {
+    margin: 0px 4px 0px -17px !important;
+    font-size: 20px;
+  }
+}
+
+.sub-menu-icon {
+  margin: 0px 4px 0px -17px !important;
+}
+
+.menu-toggle {
+  font-size: 24px;
+  padding: 9px 0 9px 20px;
+}
+
+// fix angular-intro
+//
+.introjs {
+  &-helperNumberLayer {
+    line-height: 12px;
+  }
+  // &-helperLayer {
+  //   background-color: @app-color-orange;
+  // }
+}

@@ -1,0 +1,145 @@
+<script type="text/ng-template" id="confirmModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to purge all objects for
+    <strong>{{model.domain_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        Purge Cached Objects
+      </h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <div domain-select ng-model="domain" on-select="onDomainSelected()"></div>
+              </div>
+              <div class="pull-right">
+                <a ui-sref="^.cache" class="btn btn-info">
+                  <i class="glyphicon glyphicon-pencil"></i>&nbsp;
+                  Basic Mode
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="panel-body">
+          <form class="form-horizontal">
+
+            <div class="form-group">
+              <div class="col-md-7 no-left-padding">
+                <div name="json"
+                     class="col-md-12"
+                     id="json"
+                     ng-model="json"
+                     options="options"
+                     ng-jsoneditor="jsonEditorEvent"
+                     style="height: 400px"></div>
+
+                <div class="col-sm-12" style="margin-top: 15px">
+                  <a ui-sref="^.domains" class="btn btn-default">
+                    <i class="glyphicon glyphicon-remove"></i>&nbsp;
+                    Cancel
+                  </a>
+                  &nbsp;
+                  <button class="btn btn-danger" ng-disabled="_loading || !domain" ng-click="purgeDefaultText()">
+                    <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                    <i class="glyphicon glyphicon-trash" ng-if="!_loading"></i>&nbsp; Purge All Objects
+                  </button>
+                  &nbsp;
+                  <button class="btn btn-danger"
+                          ng-disabled="_loading || !domain || jsonIsInvalid"
+                          ng-click="purge()">
+                    <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                    <i class="glyphicon glyphicon-trash" ng-if="!_loading"></i>&nbsp;
+                    Purge
+                  </button>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group ">
+                  <div class="">
+                    <label>Examples:</label>
+                    <br/>Purge all PNG files under /images, <b>non-recursive</b> (so e.g. files under /images/today/ will not
+                    be purged)<br/>
+             <pre>
+{
+"purges": [
+  {
+    "url": {
+      "is_wildcard": true,
+      "expression": "/images/*.png"
+    }
+  }
+]
+}
+             </pre>
+                  </div>
+                </div>
+
+               <div class="form-group ">
+                   <div class="">
+                     Purge all PNG files under /images, <b>recursive</b> (so e.g. files under /images/today/ will also be
+                     purged)
+
+                         <pre>
+{
+"purges": [
+  {
+    "url": {
+      "is_wildcard": true,
+      "expression": "/images/**/*.png"
+    }
+  }
+]
+}
+                      </pre>
+                   </div>
+                 </div>
+
+                <div class="form-group ">
+                  <div class="">
+                    Purge everything, recursively, for current domain
+                  <pre>
+{
+"purges": [
+  {
+    "url": {
+      "is_wildcard": true,
+      "expression": "/**/*"
+    }
+  }
+]
+}
+   </pre>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

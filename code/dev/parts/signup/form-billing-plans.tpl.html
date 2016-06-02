@@ -1,0 +1,65 @@
+<div class="row" ng-init="initBillingPlans()">
+  <div class="col-md-12">
+    <div class="panel panel-default center-block">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="text-center">
+              <h4 class="">
+                                    The world of mobile app and web acceleration is just a few minutes away.<br><br>
+                                    <b>One month free trial - NO CREDIT CARD REQUIRED.</b><br><br>
+                                     Please select your RevAPM billing plan <br>
+                                      or <a ui-sref="index"> sign in if you already have an account</a>.
+                                </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body ">
+        <div class="row" ng-if="records.length > 0">
+          <div class="col-md-3  text-center" ng-repeat="item in records | orderBy: 'monthly_fee'">
+            <div class="billing-plan">
+              <div class="billing-plan-header">
+                <h2 class="billing-plan-title">{{item.name}}</h2>
+              </div>
+              <div class="billing-plan-price">
+                <h1 class=""><span class="billing-plan-ammount">${{item.monthly_fee}}</span>/mon</h1>
+              </div>
+              <div class="billing-plan-details">
+                <div class="billing-plan-description">{{item.description}}</div>
+                <h4>Overage Charges</h4>
+                <div class="billing-plan-services" ng-repeat="service in item.services">
+                  <div>${{service.cost | number:2}} per {{service.measurement_unit}}</div>
+                </div>
+              </div>
+              <hr>
+              <footer class="billing-plan-action">
+                <button href="" ng-click="chooseBillingPlan(item)" class="btn btn-success btn-lg">Subscribe</button>
+              </footer>
+            </div>
+          </div>
+          <hr/>
+        </div>
+        <div class="row">
+          <div class="col-md-offset-4 col-md-4  text-center " _style="max-height: 280px">
+            <div class="billing-plan">
+              <div class="billing-plan-header">
+                <h2> Enterprise</h2></div>
+              <br>
+              <div class="billing-plan-details">Get a billing plan customized to meet your specific needs</div>
+              <div>
+                <div></div>
+              </div>
+              <hr>
+              <footer class="billing-plan-action">
+                <a href="https://www.revapm.com/contact-us/" class="btn btn-success btn-lg">Contact Us</a>
+              </footer>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer row text-center">
+        <p class="lead">Not sure which plan to choose? <a href="https://www.revapm.com/contact-us/" class="alert-link"><!-- <i class="glyphicon glyphicon-envelope"></i> -->Talk to an expert</a></p>
+        </div>
+      </div>
+    </div>
+  </div>

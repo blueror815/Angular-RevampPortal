@@ -1,0 +1,64 @@
+<section class="subscription-summary col-md-12">
+  <div class="col-md-6">
+    <table class="table table-condensed">
+      <colgroup>
+        <col class="col-sm-3">
+      </colgroup>
+      <tr>
+        <td>Current Billing Plan</td>
+        <td>{{subscription.product_name}} <a uib-tooltip="Change Billing Plan" ui-sref="index.billing.plans" class="btn btn-xs btn-primary"><i class=" fa fa-arrow-circle-up"></i> Change Billing Plan</a></td>
+      </tr>
+      <tr>
+        <td>Total Payments</td>
+        <td>{{subscription.total_revenue_in_cents |MonetaryUnit| currency}}</td>
+      </tr>
+      <tr>
+        <td>Current Balance</td>
+        <td>{{subscription.balance_in_cents | MonetaryUnit| currency }}</td>
+      </tr>
+      <tr>
+        <td>Subscriber Since</td>
+        <td>{{subscription.current_period_started_at | date}} </td>
+      </tr>
+      <tr>
+        <td>Next Billing</td>
+        <td>{{subscription.current_billing_amount_in_cents | MonetaryUnit| currency }} on {{subscription.next_assessment_at | date }} <a ng-href="{{subscription.billing_portal_link.url}}" class="btn btn-xs btn-primary" uib-tooltip="View Details" ng-disabled="!subscription.billing_portal_link.url" target="_blank"><i class="fa fa-eye"></i> View Details</a></td>
+      </tr>
+      <tr>
+        <td>Status </td>
+        <td>{{subscription.state | firstUpper}}</td>
+      </tr>
+      <tr>
+        <td>Activated On</td>
+        <td>{{subscription.activated_at | date }}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="col-md-6 ">
+    <table class="table table-condensed">
+      <colgroup>
+        <col class="col-sm-3">
+      </colgroup>
+      <tr>
+        <td>First Name</td>
+        <td>{{subscription.credit_card.first_name}} </td>
+      </tr>
+      <tr>
+        <td>Last Name</td>
+        <td>{{subscription.credit_card.last_name}} </td>
+      </tr>
+      <tr>
+        <td>Card Number</td>
+        <td>
+          <span ng-if="!!subscription.credit_card">{{subscription.credit_card.masked_card_number}}</span>
+          <strong ng-if="!subscription.credit_card"> No card on file </strong>
+          <a ng-href="{{subscription.billing_portal_link.url}}" class="btn btn-xs btn-primary" uib-tooltip="Update Payment Profile" ng-disabled="!subscription.billing_portal_link.url" target="_blank"><i class="glyphicon glyphicon-lock"></i> Update Payment Profile</a>
+        </td>
+      </tr>
+      <tr>
+        <td>Card Exp. Date</td>
+        <td><span ng-if="!!subscription.credit_card">{{subscription.credit_card.expiration_month}}/{{subscription.credit_card.expiration_year}}</span></td>
+      </tr>
+    </table>
+  </div>
+</section>

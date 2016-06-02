@@ -1,0 +1,52 @@
+{
+  "protractor": {
+    "seleniumAddress": "http://127.0.0.1:4444/wd/hub"
+  },
+  "portal": {
+    "host": {
+      "protocol": "http",
+      "name": "localhost",
+      "port": 3000,
+      "path": null// "portal/www/revsw-portal"
+    },
+    "users": {
+      "revAdmin": {
+        "email": "qa_user_with_rev-admin_perm@revsw.com",
+        "password": "password1",
+        "role": "Rev Admin"
+      },
+      "reseller": {
+        "email": "api_qa_user_with_reseller_perm@revsw.com",
+        "password": "password1",
+        "role": "Reseller"
+      },
+      "secondReseller": {
+        "email": "api_qa_user_2_with_reseller_perm@revsw.com",
+        "password": "password1",
+        "role": "Reseller"
+      },
+      "admin": {
+        "email": "api_qa_user_with_admin_perm@revsw.com",
+        "password": "password1",
+        "role": "Admin"
+      },
+      "user": {
+        "email": "qa_user_with_user_perm@revsw.com",
+        "password": "password1",
+        "role": "Normal User"
+      }
+    },
+    "mobileApps": {
+      "platforms": {
+        "ios": "iOS",
+        "android": "Android"
+      }
+    },
+    "usageReport": {
+      "testDomain": "www.google-test.com",
+      "hits_denominator": 120000,
+      "sent_unit": 2000,
+      "received_unit": 200
+    }
+  }
+}

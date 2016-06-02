@@ -1,0 +1,127 @@
+<!-- Note that element contain ui-view child page will be added here -->
+<script type="text/ng-template" id="activityDetails.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Activity Log Details</h3>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-3 strong">Date/Time</div>
+      <div class="col-md-9">{{model.datetime | date : 'MMM dd, yyyy H:mm:ss a'}}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 strong">User</div>
+      <div class="col-md-9">{{model.user_name}}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 strong">User ID</div>
+      <div class="col-md-9">{{model.user_id}}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 strong">User Type</div>
+      <div class="col-md-9">{{model.user_type}}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 strong">Target ID</div>
+      <div class="col-md-9">{{model.target_id}}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 strong">Activity</div>
+      <div class="col-md-9">{{model.activity}}</div>
+    </div>
+    <hr>
+    <strong>Target Object:</strong>
+    <pre class="max-height-pre">
+{{model.target_object}}
+    </pre>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-default" type="button" ng-click="cancel()">Hide</button>
+  </div>
+</script>
+
+<div class="container-fluid" ui-view="page">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        Activity Log (Last 40 Records)
+      </h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+
+              <div class="pull-right">
+                <list-filter></list-filter>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-info" ng-if="records.length == 0 && !_loading">
+            Currently there are no activity logs available in system
+          </div>
+          <div class="alert alert-info" ng-if="_loading">
+            <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp;
+            Loading...
+          </div>
+
+          <crud-pagination></crud-pagination>
+
+          <table class="table">
+            <thead>
+            <tr>
+              <th>
+                <a href="" ng-click="order('datetime')">Date/Time</a>
+                <span class="sortorder" ng-show="filter.predicate === 'datetime'"
+                      ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th>
+                <a href="" ng-click="order('user_name')">User</a>
+                <span class="sortorder" ng-show="filter.predicate === 'user_name'"
+                      ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th>
+                <a href="" ng-click="order('activity_type')">Activity Type</a>
+                <span class="sortorder" ng-show="filter.predicate === 'activity_type'"
+                      ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th>
+                <a href="" ng-click="order('activity_target')">Activity Target</a>
+                <span class="sortorder" ng-show="filter.predicate === 'activity_target'"
+                      ng-class="{reverse: filter.reverse}"></span>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+              ng-repeat="log in filteredRecords | limitTo:filter.limit:filter.skip track by $index">
+              <td>{{ getRelativeDate(log.datetime) }}</td>
+              <td>
+                <i class="glyphicon glyphicon-user"></i>&nbsp;
+                {{log.user_name}}
+              </td>
+              <td>
+                <!--<i class="glyphicon glyphicon-plus-sign"></i>&nbsp;-->
+                {{getActivityType(log.activity_type)}}
+              </td>
+              <td>
+                <div ng-click="showDetails(log)" class="log-details">
+                  <i class="glyphicon glyphicon-plus-sign"></i>&nbsp;
+                  {{getActivityTarget(log)}}
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <crud-pagination></crud-pagination>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

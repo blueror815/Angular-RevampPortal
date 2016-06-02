@@ -1,0 +1,114 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h2 class="pull-left page-title">
+      Edit SSL Certificate {{model.cert_name}}
+    </h2>
+  </div>
+</div>
+<div class="row" ng-init="getSSL_cert(params.id)">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="pull-left">
+              <a ui-sref="^" class="btn btn-info">
+                <i class="glyphicon glyphicon-arrow-left"></i>&nbsp; Back To List
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form class="form-horizontal" name="editForm">
+          <div class="form-group" ng-class="{ 'has-error': editForm.certName.$invalid && editForm.certName.$dirty }">
+            <label for="cert_name" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Enter here a Certificate Name">Certificate Name *</label>
+            <div class="col-sm-10">
+              <input type="text" autofocus class="form-control" ng-disabled="_loading" ng-model="model.cert_name" name="certName" id="cert_name" placeholder="Certificate Name" required>
+            </div>
+          </div>
+          <div class="form-group" ng-if="auth.isReseller() || auth.isRevadmin()" ng-class="{ 'has-error': editForm.accountId.$invalid &&
+                                      editForm.accountId.$dirty }">
+            <label for="account_id" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Select account name the SSL certificate should be associated with">Account *</label>
+            <div class="col-sm-10">
+              <ui-select ng-model="model.account_id" theme="select2" ng-disabled="_loading" on-select="onAccountSelect($model)" style="min-width: 550px;" id="account_id" name="accountId">
+                <ui-select-match placeholder="Select Account">{{$select.selected.companyName}}</ui-select-match>
+                <ui-select-choices repeat="item.id as item in companies | filter: {companyName: $select.search}">
+                  <div ng-bind-html="item.companyName|highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <div class="form-group" ng-if="auth.isRevadmin()">
+            <label for="cert_type_id" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Select Certificate Type">Certificate Type</label>
+            <div class="col-sm-10">
+              <select class="form-control" ng-disabled="_loading" ng-model="model.cert_type" id="cert_type_id" ng-options="obj.id as obj.typeName for obj in certs_types">
+                <option value="">--- Select Certificate Type ---</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{ 'has-error': editForm.public_ssl_cert.$invalid && editForm.public_ssl_cert.$dirty }">
+            <label for="public_ssl_cert" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Enter here a Public Certificate">Public And Intermediate Certificates *
+              <br><small>(in PEM format)</small></label>
+            <div class="col-md-10">
+              <textarea id="public_ssl_cert" placeholder="Public Certificate" class="form-control text--courier" name="public_ssl_cert" ng-model="model.public_ssl_cert" ng-disabled="_loading" required>
+              </textarea>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{ 'has-error': editForm.private_ssl_key.$invalid &&
+                                      editForm.private_ssl_key.$dirty }">
+            <label for="private_ssl_key" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Enter here a Private Key">Private Key *
+              <br><small>(in PEM format, unencrypted)</small></label>
+            <div class="col-md-10">
+              <textarea id="private_ssl_key" placeholder="Private Key" class="form-control text--courier" name="private_ssl_key" ng-model="model.private_ssl_key" ng-disabled="_loading" required>
+              </textarea>
+            </div>
+          </div>
+          <!-- <div class="form-group">
+            <label for="cert_name" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Enter here a Private Key Password">Private Key Password</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" ng-disabled="_loading" ng-model="model.private_ssl_key_passphrase" id="private_ssl_key_passphrase" max="100" placeholder="Private Key Password">
+            </div>
+          </div>
+          <div class="form-group" ng-class="{ 'has-error': editForm.chain_ssl_cert.$invalid &&
+                                      editForm.chain_ssl_cert.$dirty }">
+            <label for="chain_ssl_cert" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Enter here a Chain SSL Certificates">Chain SSL Certificates
+              <br><small>(in PEM format)</small></label>
+            <div class="col-md-10">
+              <textarea id="chain_ssl_cert" placeholder="Chain SSL Certificates" class="form-control text--courier" name="chain_ssl_cert" ng-model="model.chain_ssl_cert" ng-disabled="_loading">
+              </textarea>
+            </div>
+          </div> -->
+          <div class="form-group" ng-class="{ 'has-error': editForm.comment.$invalid &&
+                                      editForm.comment.$dirty }">
+            <label for="comment" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Comment">Comment</label>
+            <div class="col-md-10">
+              <textarea id="comment" placeholder="Comment (max 300 symbol)" class="form-control" name="comment" ng-model="model.comment" ng-disabled="_loading">
+              </textarea>
+            </div>
+          </div>
+          <hr>
+          <div class="form-group ">
+            <div class="col-sm-offset-2 col-sm-10">
+              <a ui-sref="^" class="btn btn-default">
+                <i class="glyphicon glyphicon-remove"></i>&nbsp; Cancel
+              </a>
+              <button class="btn btn-info" ng-disabled="disableSubmit(model, true)" ng-click="validateSSL_cert(model)">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                <i class="glyphicon glyphicon-check" ng-if="!_loading"></i>&nbsp; Verify
+              </button>
+              <button class="btn btn-success" ng-disabled="disableSubmit(model, true)" ng-click="updateSSL_cert(model)">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                <i class="glyphicon glyphicon-file" ng-if="!_loading"></i>&nbsp; Update
+              </button>
+              <button class="btn btn-success" ng-disabled="disableSubmit(model, true)" ng-click="publishSSL_cert(model)">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                <i class="glyphicon glyphicon-ok" ng-if="!_loading"></i>&nbsp; Publish
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

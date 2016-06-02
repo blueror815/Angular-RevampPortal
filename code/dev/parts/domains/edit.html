@@ -1,0 +1,390 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h2 class="pull-left page-title">
+      Edit Domain <strong ng-if="modelInfo.domain_name">{{modelInfo.domain_name}}</strong>
+    </h2>
+  </div>
+</div>
+<div class="row" ng-init="getDomain(params.id)">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="pull-left">
+              <a ui-sref="^" ng-disabled="_loading" class="btn btn-default">
+                <i class="glyphicon glyphicon-arrow-left"></i>&nbsp; Back To List
+              </a>
+              <a href="" ng-show="!isAdvancedMode" ng-click="onChangeModeView()" ng-disabled="_loading" class="btn btn-info">
+                <i class="icon-revapm-cogs"></i>&nbsp; Advanced Mode
+              </a>
+              <a href="" ng-show="isAdvancedMode" ng-click="onChangeModeView()" ng-disabled="_loading" class="btn btn-info">
+                <i class="glyphicon glyphicon-cog"></i>&nbsp; Basic Mode
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="form-horizontal" ng-show="isAdvancedMode">
+          <div name="json" class="col-md-12 domains-advanced-mode-edit" id="json" ng-model="modelAdvance" options="jsoneditor.options" ng-jsoneditor="jsonEditorEvent" style="height: 550px; padding-left: 0;"></div>
+          <div class="form-group ">
+            <div class="col-sm-offset-2 col-sm-10" style="margin-top: 15px;">
+              <a ui-sref="^" class="btn btn-default">
+                <i class="glyphicon glyphicon-remove"></i>&nbsp; Cancel
+              </a>
+              <button class="btn btn-info" ng-disabled="_loading || jsonIsInvalid" ng-click="validateDomain(modelAdvance)">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                <i class="glyphicon glyphicon-check" ng-if="!_loading"></i>&nbsp; Verify
+              </button>
+              <button class="btn btn-success" ng-disabled="_loading || jsonIsInvalid" ng-click="updateDomain(modelAdvance)">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                <i class="glyphicon glyphicon-file" ng-if="!_loading"></i>&nbsp; Update
+              </button>
+              <button class="btn btn-success" ng-disabled="_loading || jsonIsInvalid" ng-click="publishDomain(modelAdvance)">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                <i class="glyphicon glyphicon-ok" ng-if="!_loading"></i>&nbsp; Publish
+              </button>
+            </div>
+          </div>
+        </div>
+        <form class="form-horizontal" name="editForm" novalidate ng-show="!isAdvancedMode">
+          <div class="form-group">
+            <label for="domain_name" class="col-sm-3 control-label" popover-trigger="mouseenter">Domain Name</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" disabled autofocus ng-model="modelInfo.domain_name" id="domain_name" placeholder="Domain Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cname" class="col-sm-3 control-label" popover-trigger="mouseenter">Domain CNAME</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" disabled ng-model="modelInfo.cname" id="cname" placeholder="Domain CNAME">
+            </div>
+          </div>
+          <div class="form-group" ng-if="auth.isReseller() || auth.isRevadmin()">
+            <label for="account_id" popover-append-to-body="{{true}}" class="col-sm-3 control-label" popover-trigger="mouseenter" uib-popover="Select company name the domain should be associated with">Account</label>
+            <div class="col-sm-9">
+              <ui-select ng-model="model.account_id" theme="select2" ng-disabled="_loading" on-select="onAccountSelect($model)" style="min-width: 550px;" id="account_id" name="accountId">
+                <ui-select-match placeholder="Select Account">{{$select.selected.companyName}}</ui-select-match>
+                <ui-select-choices repeat="item.id as item in companies | filter: {companyName: $select.search}">
+                  <div ng-bind-html="item.companyName|highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="origin_server" popover-append-to-body="{{true}}" class="col-sm-3 control-label" popover-trigger="mouseenter" uib-popover="Enter here domain name or IP address of origin web server">Origin Server Name/IP</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" ng-disabled="_loading" ng-model="model.origin_server" id="origin_server" placeholder="Origin Server Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="origin_host_header" popover-append-to-body="{{true}}" class="col-sm-3 control-label" popover-trigger="mouseenter" uib-popover="Enter here a domain name to be used in 'Host' header in requests sent from RevAPM to the origin server">Origin Host Header</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" ng-model="model.origin_host_header" ng-disabled="_loading" id="origin_host_header" placeholder="Origin Host Header">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="origin_server_location_id" popover-append-to-body="{{true}}" class="col-sm-3 control-label" popover-trigger="mouseenter" uib-popover="Select a RevAPM location closest to the location of the origin server">Domain Origin Location</label>
+            <div class="col-sm-9">
+              <select class="form-control" ng-disabled="_loading" ng-model="model.origin_server_location_id" id="origin_server_location_id" ng-options="obj.id as obj.locationName for obj in locations">
+                <option value="">--- Select Location ---</option>
+              </select>
+            </div>
+          </div>
+          <!--
+          <div class="form-group">
+            <label for="tolerance"
+                   popover-append-to-body="{{true}}"
+                   class="col-sm-3 control-label"
+                   popover-trigger="mouseenter"
+                   uib-popover="Web page performance threshold used for RUM heatmap report. Recommended value is 3000 ms.">Threshold</label>
+
+            <div class="col-sm-9">
+              <input type="text"
+                     class="form-control"
+                     ng-disabled="_loading"
+                     ng-model="model.tolerance"
+                     id="tolerance"
+                     placeholder="Time in milliseconds">
+            </div>
+          </div>
+          -->
+          <!--   <hr> -->
+          <!-- Origin Communication Protocol -->
+          <div class="form-group form-inline">
+            <label for="origin_secure_protocol" class="col-sm-3 control-label">
+              Origin Communication Protocol
+            </label>
+            <div class="col-md-9">
+              <label class="radio-inline">
+                <input type="radio" ng-disabled="_loading" ng-model="model.origin_secure_protocol" value="use_end_user_protocol">Use End User Protocol
+              </label>
+              <label class="radio-inline">
+                <input type="radio" ng-disabled="_loading" ng-model="model.origin_secure_protocol" value="https_only">HTTPS Only
+              </label>
+              <label class="radio-inline">
+                <input type="radio" ng-disabled="_loading" ng-model="model.origin_secure_protocol" value="http_only">HTTP Only
+              </label>
+            </div>
+          </div>
+          <!-- // -->
+          <!-- "Non-Wildcard Domain Aliases" -->
+          <div class="form-group">
+            <label for="domain_aliases" popover-append-to-body="{{true}}" class="col-sm-3 control-label" popover-trigger="mouseenter" uib-popover="Non-Wildcard Domain Aliases">Non-Wildcard Domain Aliases</label>
+            <div class="col-sm-9">
+              <ui-select tagging tagging-label="Add New Domain" multiple tagging-tokens="SPACE|," theme="bootstrap" class="form-control" ng-disabled="_loading" ng-model="model.domain_aliases" id="domain_aliases">
+                <ui-select-match placeholder="Add domains...">{{$item}}</ui-select-match>
+                <ui-select-choices repeat="domain in model.domain_aliases">
+                  {{domain}}
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <!-- // -->
+          <!-- Wildcard Domain Alias -->
+          <div class="form-group">
+            <label for="origin_secure_protocol" class="col-sm-3 control-label">
+              Wildcard Domain Alias
+            </label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" ng-disabled="_loading" ng-model="model.domain_wildcard_alias" placeholder="Wildcard Domain Alias">
+            </div>
+          </div>
+          <!-- -->
+          <!-- Data Read Timeout, seconds -->
+          <div class="form-group form-inline">
+            <label for="origin_secure_protocol" class="col-sm-3 control-label">
+              Data Read Timeout
+            </label>
+            <div class="col-md-9">
+              <input type="number" class="form-control" ng-disabled="_loading" ng-model="model.proxy_timeout" min="0" max="99999999"> second(s)
+            </div>
+          </div>
+          <!-- -->
+          <!-- Last Mile QUIC Protocol -->
+          <div class="form-group form-inline">
+            <label for="rev_component_bp_enable_quic" class="col-sm-3 control-label">
+              Last Mile QUIC Protocol
+            </label>
+            <div class="col-md-9">
+              <toggle-switch ng-disabled="_loading" ng-model="model.rev_component_bp.enable_quic" on-label="On" off-label="Off">
+              </toggle-switch>
+            </div>
+          </div>
+          <!-- Block All Web Crawlers  -->
+          <div class="form-group form-inline">
+            <label for="block_crawlers" class="col-sm-3 control-label">
+              Block All Web Crawlers
+            </label>
+            <div class="col-md-9">
+              <toggle-switch ng-disabled="_loading" ng-model="model.rev_component_bp.block_crawlers" on-label="On" off-label="Off">
+              </toggle-switch>
+            </div>
+          </div>
+          <!-- RUM Data Collection  -->
+          <div class="form-group form-inline">
+            <label for="block_crawlers" class="col-sm-3 control-label">
+              RUM Data Collection
+            </label>
+            <div class="col-md-9">
+              <toggle-switch ng-disabled="_loading" ng-model="model.rev_component_co.enable_rum" on-label="On" off-label="Off">
+              </toggle-switch>
+            </div>
+          </div>
+          <!-- Edge Caching -->
+          <div class="form-group form-inline">
+            <label for="enable_cache" class="col-sm-3 control-label">
+              Edge Caching
+            </label>
+            <div class="col-md-9">
+              <toggle-switch ng-disabled="_loading" ng-model="model.rev_component_bp.enable_cache" on-label="On" off-label="Off">
+              </toggle-switch>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{ 'has-error': editForm.comment.$invalid &&
+                                      editForm.comment.$dirty }">
+            <label for="comment" class="col-sm-3 control-label" popover-trigger="mouseenter" uib-popover="Comment">Comment</label>
+            <div class="col-md-6">
+              <textarea id="comment" placeholder="Comment (max 300 symbol)" class="form-control" name="comment" ng-model="model.comment" ng-disabled="_loading">
+              </textarea>
+            </div>
+          </div>
+          <hr>
+          <!-- Cache Bypass Locations -->
+          <div class="form-group" ng-if="model.rev_component_bp.enable_cache">
+            <label class="col-sm-3 control-label">Cache Bypass Locations</label>
+            <div class="col-sm-9">
+              <ui-select tagging tagging-label="Add Cache Bypass Locations" multiple tagging-tokens="SPACE|," theme="bootstrap" class="form-control" ng-disabled="_loading" ng-model="model.rev_component_bp.cache_bypass_locations" id="domain_aliases">
+                <ui-select-match placeholder="Add Cache Bypass Locations...">{{$item}}</ui-select-match>
+                <ui-select-choices repeat="bypass_locations in model.rev_component_bp.cache_bypass_locations">
+                  {{bypass_locations}}
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <!-- -->
+          <!-- Caching Rules -->
+          <div class="panel panel-default caching-rules-list" ng-if="model.rev_component_bp.enable_cache">
+            <div class="panel-heading">
+              <span class="pull-left panel-buttons-left">
+                <a class="btn btn-default btn-md " ng-click="onCollapsAllCachingRule()" title="Collapse All Rules" ng-show="!isCollapsedAll">
+                  <i class="glyphicon glyphicon-chevron-up "></i>
+                </a>
+                <a class="btn btn-default btn-md " ng-click="onExpandAllCachingRule()" title="Expand All Rules">
+                  <i class="glyphicon glyphicon-chevron-down"></i>
+                </a>
+              </span>
+              <span ng-click="onAddNewCachingRule()" class="btn btn-primary btn-sm pull-right" title="Add New Caching Rule"><i class="glyphicon glyphicon-plus"></i></span>
+              <h4><b>Caching Rules</b></h4>
+            </div>
+            <div class="panel-body">
+              <!-- TODO: creater directive -->
+              <div class="panel panel-default domain-caching-rules" ng-repeat="caching_rule in model.rev_component_bp.caching_rules">
+                <div class="panel-heading">
+                  <div class="domain-caching-rules__info">
+                    <div class="pull-left panel-buttons-left">
+                      <!-- collapse -->
+                      <a class="btn btn-default btn-xs" href="" title="Collapse Caching Rule" ng-show="!caching_rule.$$cachingRuleState.isCollapsed" ng-click="caching_rule.$$cachingRuleState.isCollapsed = !caching_rule.$$cachingRuleState.isCollapsed">
+                        <i class="glyphicon glyphicon-chevron-up"></i>
+                      </a>
+                      <!-- expend -->
+                      <a class="btn btn-default btn-xs" href="" title="Expand Caching Rule" ng-show="caching_rule.$$cachingRuleState.isCollapsed" ng-click="caching_rule.$$cachingRuleState.isCollapsed = !caching_rule.$$cachingRuleState.isCollapsed">
+                        <i class="glyphicon glyphicon-chevron-down"></i>
+                      </a>
+                      <!--  Caching Rule Up  -->
+                      <a class="btn btn-default btn-xs" href="" ng-click="onUpCachingRule(caching_rule)"><i class="glyphicon glyphicon glyphicon-arrow-up " title="Move One Position Up"></i></a>
+                      <!--  Caching Rule Down  -->
+                      <a class="btn btn-default btn-xs" href="" ng-click="onDownCachingRule(caching_rule)"><i class="glyphicon glyphicon glyphicon-arrow-down" title="Move One Position Down"></i></a>
+                      <!-- // -->
+                    </div>
+                    <div class="pull-right panel-button-right">
+                      <!-- remove widget -->
+                      <a href="" title="Remove Rule" ng-click="onRemoveCachingRule($index)" ng-if="!editMode">
+                        <i class="glyphicon glyphicon-remove"></i>
+                      </a>
+                    </div>
+                    <div class="panel-title">
+                      <i class="icon-revapm-icon-regex" ng-if="!caching_rule.url.is_wildcard"></i>
+                      <i class="icon-revapm-files-empty" ng-if="caching_rule.url.is_wildcard"></i>
+                      <b>URL</b>: </i> {{caching_rule.url.value}}
+                    </div>
+                  </div>
+                </div>
+                <domain-caching-rule class="panel-body" ng-model="caching_rule" ng-show="!caching_rule.$$cachingRuleState.isCollapsed"></domain-caching-rule>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <!--  “SSL Configuration” -->
+          <div class="form-group form-inline">
+            <label for="enable_ssl" class="col-sm-3 control-label">
+              Accept SSL Requests
+            </label>
+            <div class="col-md-9">
+              <toggle-switch name="enable_ssl" ng-disabled="_loading" ng-model="model.enable_ssl" on-label="On" off-label="Off">
+              </toggle-switch>
+            </div>
+          </div>
+          <!-- //  “SSL Configuration” -->
+          <!-- Attached SSL Certificate-->
+          <div class="form-group">
+            <label for="account_id" popover-append-to-body="{{true}}" class="col-sm-3 control-label" popover-trigger="mouseenter" uib-popover="Select SSL certificate which should be associated with the domain">SSL Certificate</label>
+            <div class="col-sm-9">
+              <select class="form-control" ng-disabled="_loading" ng-model="model.ssl_cert_id" id="ssl_cert_id" ng-options="obj.id as obj.cert_name for obj in SSL_certs | filter :{account_id:model.account_id}" style="float: left;">
+                <option value="">Default RevAPM SSL Certificate</option>
+              </select>
+              <a ui-sref="index.webApp.ssl_certs" class="btn btn-primary pull-right"><i class="fa fa-lock"></i> Manage SSL Certificates</a>
+            </div>
+          </div>
+          <!-- -->
+          <div class="ssl-certificate-configuration">
+            <div class="panel panel-default ">
+              <div class="panel-body form">
+                <div class="col-md-5">
+                  <div class="form-group ">
+                    <div class="col-sm-12">
+                      <div class="checkbox">
+                        <label>
+                          <input type="radio" ng-model="isCustomSSL_conf_profile" ng-value="false" ngclick="onClackCustomSSL_conf_profile($event)"> Predefined SSL Configuration Profile
+                        </label>
+                      </div>
+                    </div>
+                    <!-- {{isCustomSSL_conf_profile}}-{{_loading || isCustomSSL_conf_profile}} -->
+                  </div>
+                  <div class="form-group form-inline">
+                    <select class="form-control col-sm-offset-3" ng-disabled="_loading|| (isCustomSSL_conf_profile == true)" ng-model="model.ssl_conf_profile" id="ssl_conf_profile" ng-options="obj.id as obj.profile_name for obj in SSL_conf_profiles" style="float: left;">
+                    </select>
+                  </div>
+                  <div class="form-group ">
+                    <div class="col-sm-12">
+                      <div class="checkbox">
+                        <label>
+                          <input type="radio" ng-model="isCustomSSL_conf_profile" ng-value="true"> Custom SSL Configuration Profile
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Right section -->
+                <div class="col-md-7" ng-disabled="isCustomSSL_conf_profile">
+                  <div class="form-group ">
+                    <label for="ssl_protocols" popover-append-to-body="{{true}}" class="col-sm-12" popover-trigger="mouseenter" uib-popover="Allowed SSL protocols">
+                      Allowed SSL Protocols <small>(in Nginx format)</small></label>
+                    <div class="col-sm-12">
+                      <input type="text" class="form-control" ng-disabled="!isCustomSSL_conf_profile" ng-model="model.ssl_protocols" id="ssl_protocols" placeholder="SSL Protocols">
+                    </div>
+                  </div>
+                  <div class="form-group ">
+                    <label for="ssl_ciphers" popover-append-to-body="{{true}}" class="col-sm-12" popover-trigger="mouseenter" uib-popover="Allowed SSL ciphers">
+                      Allowed SSL Ciphers
+                      <small>(in Nginx format)</small></label>
+                    <div class="col-sm-12">
+                      <input type="text" class="form-control" ng-disabled="!isCustomSSL_conf_profile" ng-model="model.ssl_ciphers" id="ssl_ciphers" placeholder="SSL Ciphers">
+                    </div>
+                  </div>
+                  <div class="checkbox">
+                    <label popover-trigger="mouseenter">
+                      <input type="checkbox" ng-disabled="!isCustomSSL_conf_profile" ng-model="model.ssl_prefer_server_ciphers" id="ssl_prefer_server_ciphers" placeholder="Prefer Server-Side Ciphers"><strong> Prefer Server-Side Ciphers</strong></label>
+                  </div>
+                </div>
+                <!-- // Right section-->
+              </div>
+            </div>
+          </div>
+          <hr>
+          <!--  Third-party integrtions -->
+
+          <div class="form-group">
+            <label for="third-party-integrations" class="col-sm-3 control-label">
+              Blue Triangle Tech. Key
+            </label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" ng-disabled="_loading" ng-model="model.btt_key" placeholder="BTT API key for the domain">
+            </div>
+          </div>
+
+          <div class="form-group ">
+            <div class="col-sm-offset-2 col-sm-10">
+              <a ui-sref="^" class="btn btn-default">
+                <i class="glyphicon glyphicon-remove"></i>&nbsp; Cancel
+              </a>
+              <button class="btn btn-info" ng-disabled="disableSubmit(model, true)" ng-click="validateDomain(model)">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                <i class="glyphicon glyphicon-check" ng-if="!_loading"></i>&nbsp; Verify
+              </button>
+              <button class="btn btn-success" ng-disabled="disableSubmit(model, true)" ng-click="updateDomain(model)">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                <i class="glyphicon glyphicon-file" ng-if="!_loading"></i>&nbsp; Update
+              </button>
+              <button class="btn btn-success" ng-disabled="disableSubmit(model, true)" ng-click="publishDomain(model)">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                <i class="glyphicon glyphicon-ok" ng-if="!_loading"></i>&nbsp; Publish
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

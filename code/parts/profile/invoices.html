@@ -1,0 +1,150 @@
+<div class="container-fluid" ui-view="page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 class="pull-left page-title">
+                Statements & Transactions
+            </h2>
+        </div>
+    </div>
+
+    <div class="row" ng-init="initInvoices()">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-left">
+                                <a ng-disabled="_loading"
+                                   ui-sref="index.accountSettings.users"
+                                   class="btn btn-default">
+                                    <i class="glyphicon glyphicon-arrow-left"></i>&nbsp;
+                                    Back
+                                </a>
+                            </div>
+                            <div class="pull-left">
+
+                                <form class="form-inline">
+                                    <div class="form-group">
+
+                                        <!-- <div app-select ng-model="application" on-select="reloadDirs()"></div> -->
+                                        <ui-select ng-model="account"
+                                                   theme="select2"
+                                                   ng-disabled="_loading"
+                                                   on-select="onAccountSelect($model)"
+                                                   style="min-width: 300px;" >
+                                            <ui-select-match placeholder="Select Account">{{$select.selected.acc_name}}</ui-select-match>
+                                            <ui-select-choices repeat="item in accounts | filter: {acc_name: $select.search}">
+                                                <div ng-bind-html="item.acc_name|highlight: $select.search"></div>
+                                            </ui-select-choices>
+                                        </ui-select>
+
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-left">
+                                <h2>Transactions</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="alert alert-info" ng-if="_loading">
+                        <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp;
+                        Loading...
+                    </div>
+                    <table datatable="ng" dt-options="dtOptions" class="table order-column table-striped" ng-if="!_loading">
+                        <thead>
+
+                        <tr>
+                            <th>
+                                <p>Type</p>
+                            </th>
+                            <th>
+                                <p>Date</p>
+                            </th>
+                            <th>
+                                <p>Memo</p>
+                            </th>
+                            <th>
+                                <p>Amount</p>
+                            </th>
+                            <th>
+                                <p>Success</p>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="transaction in transactions">
+                                <td>{{transaction.transaction_type}}</td>
+                                <td>{{transaction.created_at | date : 'MMM d, y h:mm:ss a'}}</td>
+                                <td>{{transaction.memo}}</td>
+                                <td>{{transaction.amount_in_cents/100 | currency}}</td>
+                                <td>
+                                    <div>
+                                        {{transaction.success}}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-left">
+                                <h2>Statements</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="alert alert-info" ng-if="_loading">
+                        <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp;
+                        Loading...
+                    </div>
+                    <table datatable="ng" dt-options="dtOptions" class="table order-column table-striped" ng-if="!_loading">
+                        <thead>
+
+                        <tr>
+                            <th>
+                                <p>#</p>
+                            </th>
+                            <th>
+                                <p>Date</p>
+                            </th>
+                            <th>
+                                <p>Memo</p>
+                            </th>
+                            <th>
+                                <p>Total</p>
+                            </th>
+                            <th>
+                                <p>Settled At</p>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="invoice in invoices">
+                            <td><a ui-sref="index.accountSettings.invoice({id: invoice.id})">{{invoice.id}}</a></td>
+                            <td>{{invoice.opened_at}}</td>
+                            <td>{{invoice.memo}}</td>
+                            <td>{{invoice.total_in_cents/100 | currency}}</td>
+                            <td>{{invoice.settled_at}}</td>
+                        </tr>
+                        <tr ng-repeat="invoice in invoices">
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

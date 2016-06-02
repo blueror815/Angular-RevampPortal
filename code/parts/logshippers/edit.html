@@ -1,0 +1,160 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h2 class="pull-left page-title">
+      Edit Log Shipping Job
+    </h2>
+  </div>
+</div>
+<div class="row" ng-init="getJob(params.id)">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="pull-left">
+              <a ui-sref="^" class="btn btn-info">
+                <i class="glyphicon glyphicon-arrow-left"></i>&nbsp; Back To List
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form class="form-horizontal" name="editForm">
+          <div class="form-group" ng-class="{ 'has-error': editForm.job_name.$invalid && editForm.job_name.$dirty }">
+            <label for="job_name" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Enter here a Job Name">Job Name *</label>
+            <div class="col-sm-10">
+              <input type="text" autofocus class="form-control" ng-disabled="_loading" ng-model="model.job_name" name="job_name" id="job_name" placeholder="Job Name" required>
+            </div>
+          </div>
+          <div class="form-group" ng-if="auth.isReseller() || auth.isRevadmin()" ng-class="{ 'has-error': editForm.accountId.$invalid && editForm.accountId.$dirty }">
+            <label for="account_id" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Select account name the job should be associated with">Account *</label>
+            <div class="col-sm-10">
+              <input type="hidden" ng-model="model.account_id" name="accountId" required></input>
+              <ui-select ng-model="model.account_id" theme="select2" ng-disabled="_loading" name="account_id" on-select="onAccountSelect($model)" style="min-width: 550px;" id="account_id">
+                <ui-select-match placeholder="Select Account">{{$select.selected.companyName}}</ui-select-match>
+                <ui-select-choices repeat="item.id as item in companies | filter: {companyName: $select.search}">
+                  <div ng-bind-html="item.companyName|highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+              <div class="has-error error-messages" ng-messages="createForm.accountId.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Set Current Mode -->
+          <div class="form-group" ng-if="auth.isReseller() || auth.isRevadmin()">
+            <label for="company" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Select current mode">Set Current Mode *</label>
+            <div class="col-sm-10">
+              <select class="form-control" id="company" ng-model="model.operational_mode" ng-disabled="_loading" ng-options="key as value for (key, value) in operationalStates"></select>
+            </div>
+          </div>
+          <!-- //Set Current Mode -->
+          <!-- Source Type-->
+          <div class="form-group">
+            <label for="domain" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Select Source Type">Source Type *</label>
+            <div class="col-sm-10">
+              <select class="form-control" id="domain" ng-model="model.source_type" ng-disabled="_loading" ng-options="key as value for (key,value) in sourceTypes" required ng-change="onChangeSourceType(model.source_type)"></select>
+            </div>
+          </div>
+          <!-- //Source Type-->
+          <!-- Source Name  -  depending on value of “Source Type” item - a drop-down searchable list of domains or mobile apps belonging to the account -->
+          <div class="form-group" ng-class="{ 'has-error': editForm.sourceId.$invalid && !editForm.sourceId.$dirty }">
+            <label for="domain" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Select source name">
+              Source <span ng-show="model.source_type=='domain'">Domain</span>
+              <span ng-show="model.source_type=='app'">Application</span> *
+            </label>
+            <div class="col-sm-10">
+              <ui-select ng-model="selectedDomainSourceId" theme="select2" name="sourceId" ng-disabled="_loading" on-select="onDomainSelect($model)" style="min-width: 550px;" ng-if="model.source_type=='domain'" required>
+                <ui-select-match placeholder="Select Domain">{{$select.selected.domain_name}}</ui-select-match>
+                <ui-select-choices repeat="item.id as item in domainsList | filter: {domain_name: $select.search,account_id:model.account_id}">
+                  <div ng-bind-html="item.domain_name|highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+              <!-- TODO: make select of Mobile Apps-->
+              <ui-select ng-model="selectedAppSourceId" class="source-select" theme="select2" name="sourceId" ng-disabled="_loading" on-select="onAppSelect($model)" style="min-width: 550px;" ng-if="(model.source_type=='app')" required>
+                <ui-select-match placeholder="Select Application">{{$select.selected.app_name}}</ui-select-match>
+                <ui-select-choices repeat="item.id as item in appsList | filter: {app_name: $select.search,account_id:model.account_id }">
+                  <div ng-bind-html="item.app_name|highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <!-- // Source Name-->
+          <hr>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <label>Destination</label>
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <label for="domain" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Select Destination ">Destination *</label>
+                <div class="col-sm-10">
+                  <select class="form-control" id="domain" ng-model="model.destination_type" ng-disabled="_loading" ng-options="key as value for (key,value) in destinationTypes" required></select>
+                </div>
+              </div>
+              <!-- Destination Host -->
+              <div class="form-group">
+                <label for="Host" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Host">Host</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="firstname" placeholder="Host" ng-model="model.destination_host" ng-disabled="_loading">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="destination_port" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Port">Port</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="destination_port" placeholder="Port" ng-model="model.destination_port" ng-disabled="_loading">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="destination_key" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Secret Key">Secret Key</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="destination_key" placeholder="Secret Key" ng-model="model.destination_key" ng-disabled="_loading">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="destination_username" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Username">Username</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="destination_username" placeholder="Username" ng-model="model.destination_username" ng-disabled="_loading">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="destination_password" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Password ">Password </label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="destination_password" placeholder="Password" ng-model="model.destination_password" ng-disabled="_loading">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- // Destination-->
+          <hr>
+          <div class="form-group">
+            <label for="notification_email" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Email For Problem Notifications">Email For Problem Notifications</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="notification_email" placeholder="Username" ng-model="model.notification_email" ng-disabled="_loading">
+            </div>
+          </div>
+          <div class="form-group" ng-class="{ 'has-error': editForm.comment.$invalid &&
+                                      editForm.comment.$dirty }">
+            <label for="comment" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Comment">Comment</label>
+            <div class="col-sm-6">
+              <textarea id="comment" placeholder="Comment (max 300 symbol)" class="form-control" name="comment" ng-model="model.comment" ng-disabled="_loading">
+              </textarea>
+            </div>
+          </div>
+          <hr>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <a ui-sref="^" class="btn btn-default">
+                <i class="glyphicon glyphicon-remove"></i>&nbsp; Cancel
+              </a>
+              <button class="btn btn-success" ng-disabled="disableSubmit(model, true)" ng-click="updateJob(model)">
+                <i class="glyphicon glyphicon-ok"></i>&nbsp; Update
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

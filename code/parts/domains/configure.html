@@ -1,0 +1,57 @@
+<div class="container-fluid" ui-view="page">
+  <div class="row">
+    <div class="col-sm-12">
+      <h4 class="pull-left page-title">
+        Configure domain <span ng-if="domain">{{domain.name}}</span>
+      </h4>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <a ui-sref="index.domains" class="btn btn-default" ng-disabled="_loading">
+                  <i class="glyphicon glyphicon-arrow-left"></i>&nbsp;
+                  Back
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <alert type="danger" ng-if="!domain">Please select domain</alert>
+
+          <form class="form-horizontal" ng-show="domain">
+
+            <div class="form-group">
+              <div class="col-md-12">
+                <div name="json"
+                     class="col-md-12"
+                     id="json"
+                     ng-model="obj.data"
+                     options="obj.options"
+                     ng-jsoneditor
+                     style="height: 300px"></div>
+
+                <div class="col-sm-12" style="margin-top: 15px">
+                  <button class="btn btn-info"
+                          ng-disabled="_loading || !domain"
+                          ng-click="update()">
+                    <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                    <i class="glyphicon glyphicon-ok" ng-if="!_loading"></i>&nbsp;
+                    Update
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

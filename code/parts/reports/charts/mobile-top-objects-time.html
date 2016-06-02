@@ -1,0 +1,54 @@
+<h3 style="margin-top: 0;">{{ heading }}</h3>
+
+<div class="clearfix" style="margin-bottom: 8px;">
+  <div class="pull-right">
+
+    <div mobile-top-objects-filters
+         fl-oses="flOses"
+         fl-countries="flCountries"
+         fl-devices="flDevices"
+         fl-operators="flOperators"
+         fl-networks="flNetworks"
+         fl-disabled="flDisabled"
+         ng-filters="filters"
+         on-filter="reload()"></div>
+
+  </div>
+</div>
+
+<div class="alert alert-info" ng-if="_loading">
+  <i class="glyphicon glyphicon-refresh spin"></i>&nbsp;
+  Loading
+</div>
+
+<div ng-if="!_loading">
+  <div class="alert alert-info" ng-if="!items.length">
+    No data to display
+  </div>
+
+  <div ng-hide="!items.length">
+
+    <div class="col-md-12">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>URL</th>
+          <th style="width: 10%;">Time(ms)</th>
+          <th style="width: 10%;">Requests</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in items">
+          <td>
+            <a target="_blank" ng-href="{{item.key}}">{{item.key}}</a>
+          </td>
+          <td class="text-right">{{item.val}}</td>
+          <td class="text-right">{{item.count}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+

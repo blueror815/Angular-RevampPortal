@@ -1,0 +1,87 @@
+<div class="container-fluid">
+<!--TODO: delete this template because it deprecated and not uses -->
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        Configure Domain <strong ng-if="domain">{{domain.domain_name}}</strong>
+      </h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <a ui-sref="^"
+                   ng-disabled="_loading"
+                   class="btn btn-default">
+                  <i class="glyphicon glyphicon-arrow-left"></i>&nbsp;
+                  Back To List
+                </a>
+                <a ui-sref="^.edit({id: id})"
+                   ng-disabled="_loading"
+                   class="btn btn-info">
+
+                  <i class="glyphicon glyphicon-pencil"></i>&nbsp;
+                  Basic Mode
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <alert type="danger" ng-if="!id">Please Select Domain</alert>
+
+          <form class="form-horizontal" ng-show="id">
+
+            <div class="form-group">
+              <div class="col-md-12">
+                <div name="json"
+                     class="col-md-12"
+                     id="json"
+                     ng-model="obj.data"
+                     options="obj.options"
+                     ng-jsoneditor
+                     style="height: 550px; padding-left: 0;"></div>
+
+                <div class="col-sm-12" style="margin-top: 15px">
+                  <a ui-sref="^"
+                     ng-disabled="_loading"
+                     class="btn btn-default">
+                    <i class="glyphicon glyphicon-remove"></i>&nbsp;
+                    Cancel
+                  </a>
+                  <button class="btn btn-info"
+                          ng-disabled="_loading || !id"
+                          ng-click="verify()">
+                    <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                    <i class="glyphicon glyphicon-check" ng-if="!_loading"></i>&nbsp;
+                    Verify
+                  </button>
+                  <button class="btn btn-success"
+                          ng-disabled="_loading || !id"
+                          ng-click="update()">
+                    <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                    <i class="glyphicon glyphicon-file" ng-if="!_loading"></i>&nbsp;
+                    Update
+                  </button>
+                  <button class="btn btn-success"
+                          ng-disabled="_loading"
+                          ng-click="publish()">
+                    <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                    <i class="glyphicon glyphicon-ok" ng-if="!_loading"></i>&nbsp;
+                    Publish
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

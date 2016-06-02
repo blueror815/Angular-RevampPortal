@@ -1,0 +1,48 @@
+<div class="container-fluid" style="margin-top: -40px;">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Mobile Reports</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+
+                <form class="form-inline">
+                  <div class="form-group">
+                    <select class="form-control"
+                            ng-options="item.app_id as item.app_name for item in apps"
+                            ng-model="application"
+                            ng-selected="onAppSelected()"
+                            >
+                      <option value="">All Applications</option>
+                    </select>
+                  </div>
+
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div mobile-hits-chart
+                   ng-account="account"
+                   ng-app="application"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

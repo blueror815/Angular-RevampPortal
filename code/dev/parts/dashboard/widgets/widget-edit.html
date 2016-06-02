@@ -1,0 +1,32 @@
+<form role="form">
+  <div class="form-group">
+    <label for="domain">Domain</label>
+    <div domain-select id="domain" ng-model="domain" on-select="onDomainSelected()" select-one="true"></div>
+  </div>
+  <div class="form-group">
+    <label for="domain">Filters</label>
+  </div>
+  <div class="form-inline">
+    <div class="form-group">
+      <!-- <label for="domain">Time period</label> -->
+      <input date-range-picker="" ng-model="config.filters.time_period" options="::datePicker.options" class="form-control date-picker select2" type="text" />
+    </div>
+    <div class="form-group">
+      <select id="country" class="form-control fixed" ngoptions="::key as ::item for (key, item) in flCountry" ng-model="config.filters.country" ng-disable="!domain">
+        <option label="All Countries" value="">All Countries</option>
+        <option ng-repeat="::key as ::item for (key, item) in  flCountry" value="{{item}}">{{item}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <select id="os" class="form-control fixed" ng-options="item for item  in flOs.labels" ng-model="config.filters.os" ng-disable="!domain">
+        <option value="">All OS</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <select id="device" class="form-control fixed" ngoptions="item for item in flDevice.labels" ng-model="config.filters.device">
+        <option label="All Devices" value="">All Devices</option>
+        <option ng-repeat="item in flDevice.labels" value="{{item}}">{{item}}</option>
+      </select>
+    </div>
+  </div>
+</form>

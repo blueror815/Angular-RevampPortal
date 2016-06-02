@@ -1,0 +1,18 @@
+<h3 class="reports_charts_title">Success/Failure Request Status</h3>
+<div filter-time-periods
+     ng-hide="!ngDomain"
+     fl-os="flOs"
+     fl-country="flCountry"
+     fl-device="flDevice"
+     ng-filters="filters"
+     on-filter="reload()"></div>
+<div class="alert alert-info" ng-if="!_loading && (!ngDomain || !traffic.labels.length)">
+  No data to display
+</div>
+<div class="alert alert-info" ng-if="_loading">
+  <i class="glyphicon glyphicon-refresh spin"></i>&nbsp;
+  Loading
+</div>
+<div class="auto-scroll" ng-hide="!traffic.labels || !traffic.labels.length">
+  <div style="min-width: 500px; min-height: 350px" line-chart ng-data="traffic" ng-chart-options="chartOptions"></div>
+</div>

@@ -1,0 +1,21 @@
+<div class="modal-header">
+  <h3 class="modal-title">Please Select Account</h3>
+</div>
+<div class="modal-body">
+
+  <ui-select ng-model="selected"
+             theme="select2"
+             on-select="onModelSelect($model)"
+             style="min-width: 300px;" >
+    <ui-select-match placeholder="Select account">{{$select.selected.companyName}}</ui-select-match>
+    <ui-select-choices repeat="item in companies | filter: {companyName: $select.search}">
+      <small ng-bind-html="item.companyName|highlight: $select.search"></small>
+    </ui-select-choices>
+  </ui-select>
+
+
+</div>
+<div class="modal-footer">
+  <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+  <button class="btn btn-success" type="button" ng-click="ok()" ng-disabled="!selected">Create</button>
+</div>

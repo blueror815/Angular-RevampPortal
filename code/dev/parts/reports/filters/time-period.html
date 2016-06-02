@@ -1,0 +1,45 @@
+<div class="row filter-time-period ng-show="flOs && flCountry && flDevice">
+  <div class="col-md-12">
+    <form class="form-inline">
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-model="delay">
+          <option value="1">Last 1 Day</option>
+          <option value="7">Last 7 Days</option>
+          <option value="30">Last 30 Days</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-model="ngFilters.country"
+                ng-options="key as item for (key, item) in flCountry">
+          <option value="">All Countries</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-model="ngFilters.os"
+                ng-options="item for item in flOs">
+          <option value="">All OS</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="form-control fixed"
+                ng-model="ngFilters.device"
+                ng-options="item for item in flDevice">
+          <option value="">All Devices</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-info" ng-click="updateFilters()">
+          <i class="glyphicon glyphicon-refresh"></i>&nbsp;
+          Update Report
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

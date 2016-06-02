@@ -1,0 +1,142 @@
+<!-- Note that element contain ui-view child page will be added here -->
+<script type="text/ng-template" id="confirmModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete SSL certificate
+    <strong>{{model.cert_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<script type="text/ng-template" id="confirmUpdateModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to update SSL certificate
+    <strong>{{model.cert_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<script type="text/ng-template" id="confirmPublishModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to publish SSL certificate
+    <strong>{{model.cert_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+
+<div class="container-fluid" ui-view="page">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        SSL Certificates List
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <a ui-sref=".new" class="btn btn-success" ng-disabled="_loading">
+                  <i class="glyphicon glyphicon-plus"></i>&nbsp; Add New SSL Certificate
+                </a>
+              </div>
+              <div class="pull-right">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <label for="search">Search:&nbsp;</label>
+                    <input type="text" class="form-control" id="search" placeholder="" ng-model="filter.filter" ng-change="checkFilterPage()">&nbsp;&nbsp;
+                    <i class="glyphicon glyphicon-remove" ng-show="filter.filter != ''" ng-click="filter.filter = ''"></i>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-info" ng-if="records.length == 0 && !_loading">
+            Currently you don't have any SSL certificates registered in the system. You can click on "Add SSL Certificate" button above to add an SSL certificate.
+          </div>
+          <div class="alert alert-info" ng-if="_loading">
+            <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp; Loading...
+          </div>
+          <crud-pagination></crud-pagination>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <a href="" ng-click="order('cert_name')">Certificate Name</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'cert_name'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+
+                <th><a href="" ng-click="order('domains')">Domains</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'domains'" ng-class="{reverse: filter.reverse}"></span></th>
+                <th ng-if="auth.isRevadmin()"><a href="" ng-click="order('cert_type')">Cert Type</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'cert_type'" ng-class="{reverse: filter.reverse}"></span></th>
+                <th> <a href="" ng-click="order('expires_at')">Expires At</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'expires_at'" ng-class="{reverse: filter.reverse}"></span></th>
+                <th>
+                  <a href="" ng-click="order('updated_at')">Last Update</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'updated_at'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                 <th class="thin">Status</th>
+                <th>Actions</th>
+                <th class="account" ng-if="auth.isReseller() ||  auth.isRevadmin()">
+                  <a href="" ng-click="order('companyName')">Account</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'companyName'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="anchor{{::$index}}" ng-click="saveAnchorScrollIndex($index)" ng-repeat="item in filteredRecords | limitTo:filter.limit:filter.skip track by $index">
+                <td>
+                  <a ui-sref=".edit({id: item.id})" ng-if="!item.loading" uib-tooltip="Edit SSL Certificate">
+                  {{item.cert_name}}
+                </a>
+                </td>
+                <td>{{item.domains}}</td>
+                <td ng-if="auth.isRevadmin()">{{item.cert_type}}</td>
+                <td>{{getRelativeDate(item.expires_at)}}</td>
+                <td>{{getRelativeDate(item.updated_at) }}</td>
+                <td>
+                  <div  cert-staging-status ng-id="item.id">ddd</div>
+                </td>
+                <td class="actions">
+                  <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>
+                  <a ui-sref=".edit({id: item.id})" ng-if="!item.loading" uib-tooltip="Edit SSL Certificate">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                  </a>
+                  <a href="" ng-if="!item.loading" ng-click="deleteSSL_cert(item)" uib-tooltip="Delete SSL Certificate">
+                    <i class="glyphicon glyphicon-trash"></i>
+                  </a>
+                </td>
+                <td ng-if="auth.isReseller() ||  auth.isRevadmin()">
+                  <div>{{item.companyName}}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <hr>
+          <crud-pagination></crud-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="filter-generator">
+	<div class="date-picker-wrapper pull-left">
+		<input 
+			date-range-picker=""
+			ng-model="datePicker.date"
+			options="::datePicker.options"
+			class="form-control date-picker select2"
+			type="text"
+			/>
+		<input
+			ng-show="datePicker.overlay.show"
+			ng-focus="handlers.overlayClickHandler()"
+			ng-model="datePicker.overlay.val"
+			class="over form-control select2"/>
+	</div>
+	<div class="pull-left" ng-repeat="filter in filters">
+  <select
+			ng-if="filter.name == constants.country"
+			ng-model="filter.selected"
+			ng-options="::key as ::item for (key, item) in filter.vals")
+			ng-change="handlers.filterChange()"
+			class="form-control"
+			>
+			<option
+				value=""
+				selected
+				>All Countries
+			</option>
+		</select>
+		<select 
+			ng-if="filter.name != constants.country"
+			ng-model="filter.selected"
+			ng-options="::item for item in filter.vals")
+			ng-change="handlers.filterChange()"
+			class="form-control">
+			<option
+				value=""
+				selected
+				>All {{::filter.allTitle}}
+			</option>
+		</select>
+		<i
+			ng-click="actions.removeShownFilter(filter, $index)"
+			class="fa fa-times remove-active-filter"
+			>
+		</i>
+	</div>
+	<div
+		ng-show="addFilterMenu.filters().length > 0"
+		class="button-wrapper pull-left"
+		>
+		<button
+			ng-click="actions.showMenu($event)"
+			class="btn btn-success"
+			>
+			<i class="glyphicon glyphicon-plus"></i>
+		</button>
+		<div
+			ng-show="addFilterMenu.show"
+			ng-mouseleave="actions.hideMenu()"
+			class="fg-add-filter-menu"
+			>
+			<div
+				ng-click="actions.addFilter(filter, $index)"
+				ng-repeat="filter in addFilterMenu.filters()"
+				ng-bind="::filter.name"
+				class="dd-element"
+				>
+			</div>
+		</div>
+	</div>
+	<button
+		class="btn btn-info pull-left"
+		ng-click="actions.refreshFilter()"
+		>
+		<i class="glyphicon glyphicon-refresh"></i>
+	</button>
+</div>

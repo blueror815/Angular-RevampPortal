@@ -1,0 +1,69 @@
+
+  <form class="form-inline">
+    <div class="form-group">
+      <select class="form-control fixed"
+              ng-model="span">
+        <option value="1">Last 1 Hour</option>
+        <option value="12">Last 12 Hours</option>
+        <option value="24">Last 24 Hours</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <select class="form-control fixed"
+              ng-model="ngFilters.country"
+              ng-options="key as item for (key, item) in flCountries">
+        <option value="">All Countries</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <select class="form-control fixed"
+              ng-model="ngFilters.os"
+              ng-options="item for item in flOses">
+        <option value="">All OS</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <select class="form-control fixed"
+              ng-model="ngFilters.device"
+              ng-options="item for item in flDevices">
+        <option value="">All Devices</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <select class="form-control fixed"
+              ng-model="ngFilters.operator"
+              ng-options="item for item in flOperators">
+        <option value="">All Operators</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <select class="form-control fixed"
+              ng-model="ngFilters.network"
+              ng-options="item for item in flNetworks">
+        <option value="">All Networks</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <select class="form-control fixed"
+              ng-model="count">
+        <option value="5">Top 5 Records</option>
+        <option value="10">Top 10 Records</option>
+        <option value="20">Top 20 Records</option>
+        <option value="50">Top 50 Records</option>
+        <option value="100">Top 100 Records</option>
+        <option value="250">Top 250 Records</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <button class="btn btn-info" ng-click="update()" ng-disabled="flDisabled">
+        <i class="glyphicon glyphicon-refresh"></i>&nbsp;Update Report
+      </button>
+    </div>
+  </form>

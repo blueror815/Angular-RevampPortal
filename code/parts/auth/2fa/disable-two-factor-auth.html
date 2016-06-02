@@ -1,0 +1,36 @@
+<div>
+  <!-- Note that element contain ui-view child page will be added here -->
+  <script type="text/ng-template" id="confirm2FaDisable.html">
+    <div class="modal-header">
+      <h3 class="modal-title">Confirm</h3>
+    </div>
+    <div class="modal-body">
+      Are you sure you want to disable Two-Factor Authentication
+      <span ng-show="!model.isMyUser">
+        for user: <strong>{{model.user.firstname}} {{model.user.lastname}} ({{model.user.email}})</strong>
+      </span> ?
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+      <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+  </script>
+
+  <form class="form-inline ng-cloak" ng-show="twoFactorAuthEnabled">
+    <div class="form-group" ng-if="false">
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="glyphicon" ng-class="oneTimePassword && 'glyphicon-ok-circle' || 'glyphicon-exclamation-sign'"></i>
+        </div>
+        <input type="text" class="form-control" id="one-time-password" placeholder="One-Time Password" ng-model="oneTimePassword">
+      </div>
+    </div>&nbsp;
+    <button type="submit" class="btn btn-danger" ng-disabled="_loading" ng-click="disable(oneTimePassword)">
+      <i class="glyphicon glyphicon-ban-circle"></i>&nbsp;
+      Disable 2FA
+    </button>
+  </form>
+  <div class="ng-cloak" ng-hide="twoFactorAuthEnabled">
+    <span class="label label-danger">Disabled</span>
+  </div>
+</div>

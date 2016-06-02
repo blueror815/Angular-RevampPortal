@@ -1,0 +1,138 @@
+<!-- Note that element contain ui-view child page will be added here -->
+<script type="text/ng-template" id="confirmModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete company
+    <strong>{{model.companyName}}</strong> ?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+
+<div class="container-fluid" ui-view="page">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        Companies List
+      </h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <a ng-disabled="_loading"
+                   ui-sref=".new"
+                   class="btn btn-success">
+                  <i class="glyphicon glyphicon-plus"></i>&nbsp;
+                  Add New Company
+                </a>
+              </div>
+
+              <div class="pull-right">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <label for="search">Search:&nbsp;</label>
+                    <input type="text" class="form-control" id="search" placeholder="" ng-model="filter.filter"
+                           ng-change="checkFilterPage()">&nbsp;&nbsp;
+                    <i class="glyphicon glyphicon-remove" ng-show="filter.filter != ''"
+                       ng-click="filter.filter = ''"></i>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-info" ng-if="records.length == 0 && !_loading">
+            Currently there are not companies registered in the system
+          </div>
+          <div class="alert alert-info" ng-if="_loading">
+            <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp;
+            Loading...
+          </div>
+          <crud-pagination></crud-pagination>
+          <table class="table">
+            <thead>
+            <tr>
+              <th class="col-sm-2 col-lg-2">
+                <a href="" ng-click="order('companyName')">Company Name</a>
+                <span class="sortorder" ng-show="filter.predicate === 'companyName'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <!-- <th class="col-lg-4">
+                <a href="" ng-click="order('comment')">Comment</a>
+                <span class="sortorder" ng-show="filter.predicate === 'comment'" ng-class="{reverse: filter.reverse}"></span>
+              </th> -->
+              <th class="col-sm-1 col-lg-1">
+                <a href="" ng-click="order('created_at')">Created At</a>
+                <span class="sortorder" ng-show="filter.predicate === 'created_at'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th class="col-sm-1 col-lg-1">
+                <a href="" ng-click="order('createdBy')">Created By</a>
+                <span class="sortorder" ng-show="filter.predicate === 'createdBy'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th class="col-sm-1 col-lg-1">
+                <a href="" ng-click="order('subscription_state')">Subscription State</a>
+                <span class="sortorder" ng-show="filter.predicate === 'subscription_state'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th class="actions col-sm-1 col-lg-1">
+                <a href="" ng-click="order('subscription_name')">Billing Plan</a>
+                <span class="sortorder" ng-show="filter.predicate === 'subscription_name'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th class="col-sm-1 col-lg-1">
+                <a href="" ng-click="order('updated_at')">Last Update</a>
+                <span class="sortorder" ng-show="filter.predicate === 'updated_at'" ng-class="{reverse: filter.reverse}"></span>
+              </th>
+              <th class="actions col-sm-1 col-lg-1 text-center">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr id="anchor{{::$index}}" ng-click="saveAnchorScrollIndex($index)"
+              ng-repeat="item in filteredRecords | limitTo:filter.limit:filter.skip track by $index">
+              <td>
+                <a ui-sref=".edit({id: item.id})" ng-if="!item.loading" uib-tooltip="Edit Company">
+                  {{item.companyName}}
+                </a>
+              </td>
+              <!-- <td>{{item.comment}}</td> -->
+              <td>{{getRelativeDate(item.created_at)}}</td>
+              <td>{{item.createdBy}}</td>
+              <td>{{item.subscription_state}}</td>
+              <td>{{(item.subscription_name) ? item.subscription_name : 'Manual'}}</td>
+              <td>{{getRelativeDate(item.updated_at)}}</td>
+              <td class="actions text-right">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>
+                <a ng-click="onGoToUsageReport(item)"  uisref="index.billing.usage({acc_id: item.id})" ng-if="!item.loading" uib-tooltip="Usage Report">
+                  <i class="fa fa-balance-scale"></i>
+                </a>
+                <a ng-click="onGoToBillingPlans(item)"  ng-if="!item.loading" uib-tooltip="Change Billing Plan">
+                  <i class="fa fa-arrow-circle-up"></i>
+                </a>
+                <a ng-click="onGoToBillingStatement(item)" ng-if="!item.loading" uib-tooltip="Statements">
+                  <i class="fa fa-money"></i>
+                </a>
+                <a ui-sref=".edit({id: item.id})" ng-if="!item.loading" uib-tooltip="Edit Company">
+                  <i class="glyphicon glyphicon-pencil"></i>
+                </a>
+                <a href="" ng-if="!item.loading" ng-click="deleteCompany(item)" uib-tooltip="Delete Company">
+                  <i class="glyphicon glyphicon-trash"></i>
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <hr>
+          <crud-pagination></crud-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

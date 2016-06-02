@@ -1,0 +1,169 @@
+<script type="text/ng-template" id="confirmModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete app
+    <strong>{{model.app_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<script type="text/ng-template" id="confirmUpdateModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to update app configuration
+    <strong>{{model.app_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<script type="text/ng-template" id="confirmPublishModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to publish app configuration
+    <strong>{{model.app_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<div class="container-fluid" ui-view="page">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+       {{$state.current.data.platform}} Apps List
+      </h2>
+    </div>
+  </div>
+  <div class="row" ng-init="initList()">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <a ui-sref=".new" class="btn btn-success" ng-disabled="_loading">
+                  <i class="glyphicon glyphicon-plus"></i>&nbsp; Add New App
+                </a>
+              </div>
+              <div class="pull-right">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <label for="search">Search:&nbsp;</label>
+                    <input type="text" class="form-control" id="search" placeholder="" ng-model="filter.filter" ng-change="checkFilterPage()">&nbsp;&nbsp;
+                    <i class="glyphicon glyphicon-remove" ng-show="filter.filter != ''" ng-click="filter.filter = ''"></i>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-info" ng-if="records.length == 0 && !_loading">
+            Currently you don't have any apps registered in the system. You can click on "Add New App" button above to add an app.
+          </div>
+          <div class="alert alert-info" ng-if="_loading">
+            <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp; Loading...
+          </div>
+          <crud-pagination></crud-pagination>
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>
+                  <a href="" ng-click="order('app_name')">Name</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'app_name'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th class="thin">
+                  <a href="" ng-click="order('app_platform')">Platform</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'app_platform'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th class="thin">
+                  <a href="" ng-click="order('last_app_published_version')">Version</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'last_app_published_version'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th>
+                  <a href="" ng-click="order('updated_at')">Last Update</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'updated_at'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th>SDK Key</th>
+                <th class="thin">Status</th>
+                <th>Actions</th>
+                <th class="account" ng-if="auth.isReseller() ||  auth.isRevadmin()">
+                  <a href="" ng-click="order('companyName')">Account</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'companyName'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="anchor{{::$index}}" ng-click="saveAnchorScrollIndex($index)" ng-repeat="item in filteredRecords | limitTo:filter.limit:filter.skip track by $index">
+                <td>
+                  <a ui-sref=".edit({id: item.id})" ng-if="!item.loading" uib-tooltip="Edit App">
+                  {{item.app_name}}
+                </a>
+                </td>
+                <td>{{item.app_platform}}</td>
+                <td>{{item.last_app_published_version}}</td>
+                <td>{{ getRelativeDate(item.updated_at) }}</td>
+                <td>
+                  <button class="btn btn-primary" clipboard text="item.sdk_key" on-copied="copyCallback()" on-error="copyCallback(err)" style="vertical-align: initial;" uib-tooltip="Click to copy the key to the clipboard" tooltip-placement="top"><i class="fa fa-files-o"></i></button>
+                  <button class="btn btn-primary" ng-click="switchKeyVisibility(item)" ng-hide="item.showKey" style="vertical-align: initial;">Show SDK Key</button>
+                  <input ng-if="item.showKey" ng-blur="switchKeyVisibility(item)" class="form-control" value="{{item.sdk_key}}" style="width: 300px; display: inline-block; position: absolute; z-index: 999; margin-left: 4px;" focus-me="item.showKey">
+                  <!--<input class="list-input" disabled ng-hide="item.show" type="password" value="{{item.sdk_key}}" />-->
+                  <!--<input class=""  ng-show="item.show" type="text" value="{{item.sdk_key}}"  />-->
+                  <!--<i class="glyphicon eye"-->
+                  <!--ng-class="{'glyphicon-eye-close': !item.show, 'glyphicon-eye-open': item.show}"-->
+                  <!--ng-click="switch(item)"-->
+                  <!--&gt;</i>-->
+                </td>
+                <td>
+                  <div app-staging-status ng-id="item.id"></div>
+                </td>
+                <td class="actions">
+                  <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>
+                  <a ui-sref=".edit({id: item.id})" ng-if="!item.loading" uib-tooltip="Edit App">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                  </a>
+                  <a ui-sref=".configure({id: item.id})" ng-if="!item.loading" uib-tooltip="Advanced Edit App">
+                    <i class="glyphicon glyphicon-cog"></i>
+                  </a>
+                  <a href="" ng-if="!item.loading" ng-click="deleteApp(item)" uib-tooltip="Delete App">
+                    <i class="glyphicon glyphicon-trash"></i>
+                  </a>
+                  <a href="#/mobile/traffic" ng-if="!item.loading" ng-click="storeToStorage(item)" uib-tooltip="Stats">
+                    <i class="glyphicon glyphicon-stats"></i>
+                  </a>
+                  <a href="" ui-sref=".versions({id: item.id})" ng-if="!item.loading" uib-tooltip="Previous Versions">
+                    <i class="glyphicon glyphicon-book"></i>
+                  </a>
+                </td>
+                <td ng-if="auth.isReseller() ||  auth.isRevadmin()">
+                  <div>{{item.companyName}}</div>
+                </td>
+              </tr>
+              <!--<tr class="disabled loading">-->
+              <!--<td>John</td>-->
+              <!--<td>Doe</td>-->
+              <!--<td>Monday, Aug 10, 2015, 8:31 PM</td>-->
+              <!--<td class="actions">-->
+              <!--<i class="glyphicon glyphicon-refresh spin"></i>-->
+              <!--</td>-->
+              <!--</tr>-->
+            </tbody>
+          </table>
+          <hr>
+          <crud-pagination></crud-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

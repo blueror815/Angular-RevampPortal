@@ -1,0 +1,46 @@
+<div class="row dashboard__title">
+  <div class="col-md-12">
+    <dashboard-btn-new class="h4 pull-left btn btn-link" ng-if="!editMode && !!model"></dashboard-btn-new>
+    <h2 class "h2 pull-left page-title">
+   {{model.title}}
+    <span class="h5 form-inline pull-right">
+      <!-- TODO: make directive autorefresh-time-period -->
+      <div class="form-group">
+        <select class="select2 form-control" ng-model="model.options.autorefresh">
+          <option value="1">Every 1 Minute</option>
+          <option value="5">Every 5 Minutes</option>
+          <option value="15">Every 15 Minutes</option>
+          <option value="30">Every 30 Minutes</option>
+          <option value="">No Auto-Refresh</option>
+        </select>
+        <button class="btn btn-info " ng-click="model.refreshNow= true">
+          <i class="glyphicon glyphicon-refresh"></i> Refresh Now
+        </button>
+      </div>
+    </span>
+    <span class="pull-right">
+        <a href="" ng-if="editMode" title="Add New Widget" class="btn btn-link" ng-click="addWidgetDialog()">
+          <i class="glyphicon glyphicon-plus-sign"></i>
+        </a>
+        <a href="" ng-if="editMode" title="Edit Dashboard Properties" class="btn btn-link"  ng-click="editDashboardDialog()">
+          <i class="glyphicon glyphicon-cog"></i>
+        </a>
+        <a href="" ng-if="options.editable" class="btn btn-link" title="{{editMode ? 'Save Changes' : 'Modify This Dashboard'}}" ng-click="toggleEditMode()">
+          <i class="glyphicon" x-ng-class="{'glyphicon-edit' : !editMode, 'glyphicon-save' : editMode}"></i>
+        </a>
+        <a href="" ng-if="editMode" class="btn btn-link"  title="Undo Changes" ng-click="cancelEditMode()">
+          <i class="glyphicon glyphicon-repeat adf-flip"></i>
+        </a>
+    </span>
+    </h2>
+  </div>
+
+<div class="col-md-12" ng-if="(model.getCountDashboardWidget(model.rows)==0)">
+  <strong class="alert alert-attention"> Click on <i class="glyphicon glyphicon-edit"></i> icon in the top right corner to add graphs to the dashboard.</strong>
+  <hr>
+  <div class="dashboard-preview-background">
+
+  </div>
+</div>
+
+

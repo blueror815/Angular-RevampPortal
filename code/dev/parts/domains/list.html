@@ -1,0 +1,168 @@
+<!-- Note that element contain ui-view child page will be added here -->
+<script type="text/ng-template" id="confirmModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete domain
+    <strong>{{model.domain_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<script type="text/ng-template" id="confirmUpdateModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to update domain configuration
+    <strong>{{model.domain_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<script type="text/ng-template" id="confirmPublishModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to publish domain configuration
+    <strong>{{model.domain_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<script type="text/ng-template" id="confirmModalDeleteCachingRule.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete caching rule<span ng-if="model.url.value"> for URL "{{model.url.value}}"</span>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<div class="container-fluid" ui-view="page">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        Domains List
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <a ui-sref=".new" class="btn btn-success" ng-disabled="_loading">
+                  <i class="glyphicon glyphicon-plus"></i>&nbsp; Add New Domain
+                </a>
+              </div>
+              <div class="pull-right">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <label for="search">Search:&nbsp;</label>
+                    <input type="text" class="form-control" id="search" placeholder="" ng-model="filter.filter" ng-change="checkFilterPage()">&nbsp;&nbsp;
+                    <i class="glyphicon glyphicon-remove" ng-show="filter.filter != ''" ng-click="filter.filter = ''"></i>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-info" ng-if="records.length == 0 && !_loading">
+            Currently you don't have any web domains registered in the system. You can click on "Add New Domain" button above to add a domain.
+          </div>
+          <div class="alert alert-info" ng-if="_loading">
+            <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp; Loading...
+          </div>
+          <crud-pagination></crud-pagination>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <a href="" ng-click="order('domain_name')">Name</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'domain_name'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th>
+                  <a href="" ng-click="order('cname')">CNAME</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'cname'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th>
+                  <a href="" ng-click="order('updated_at')">Last Update</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'updated_at'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+                <th class="thin">Status</th>
+                <th>Actions</th>
+                <th class="account" ng-if="auth.isReseller() ||  auth.isRevadmin()">
+                  <a href="" ng-click="order('companyName')">Account</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'companyName'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="anchor{{::$index}}" ng-click="saveAnchorScrollIndex($index)" ng-repeat="item in filteredRecords | limitTo:filter.limit:filter.skip track by $index">
+                <td>
+                  <a ui-sref=".edit({id: item.id})" ng-if="!item.loading" uib-tooltip="Edit Domain">
+                  {{item.domain_name}}
+                </a>
+                </td>
+                <td>{{item.cname}}</td>
+                <td>{{ getRelativeDate(item.updated_at) }}</td>
+                <td>
+                  <div domain-staging-status ng-id="item.id"></div>
+                </td>
+                <td class="actions">
+                  <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>
+                  <a ui-sref=".edit({id: item.id})" ng-if="!item.loading" uib-tooltip="Edit Domain">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                  </a>
+                  <!-- <a ui-sref=".advanced({id: item.id})" ng-if="!item.loading" uib-tooltip="Advanced Edit Domain">
+                    <i class="glyphicon glyphicon-cog"></i>
+                  </a> -->
+                  <a ui-sref=".edit({id: item.id,isAdvanced:true})" ng-if="!item.loading" uib-tooltip="Advanced Edit Domain">
+                    <i class="glyphicon glyphicon-cog"></i>
+                  </a>
+                  <a href="" ng-if="!item.loading" ng-click="deleteDomain(item)" uib-tooltip="Delete Domain">
+                    <i class="glyphicon glyphicon-trash"></i>
+                  </a>
+                  <a href="#/reports/proxy" ng-if="!item.loading" ng-click="storeToStorage(item)" uib-tooltip="Stats">
+                    <i class="glyphicon glyphicon-stats"></i>
+                  </a>
+                  <a ui-sref=".versions({id: item.id})" ng-if="!item.loading" uib-tooltip="Previous Versions">
+                    <i class="glyphicon glyphicon-book"></i>
+                  </a>
+                </td>
+                <td ng-if="auth.isReseller() ||  auth.isRevadmin()">
+                  <div>{{item.companyName}}</div>
+                </td>
+              </tr>
+              <!--<tr class="disabled loading">-->
+              <!--<td>John</td>-->
+              <!--<td>Doe</td>-->
+              <!--<td>Monday, Aug 10, 2015, 8:31 PM</td>-->
+              <!--<td class="actions">-->
+              <!--<i class="glyphicon glyphicon-refresh spin"></i>-->
+              <!--</td>-->
+              <!--</tr>-->
+            </tbody>
+          </table>
+          <hr>
+          <crud-pagination></crud-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

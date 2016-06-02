@@ -1,0 +1,94 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>A/B Reports</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+
+                <form class="form-inline">
+                  <div class="form-group">
+                    <div app-select ng-model="application" on-select="reloadDirs()"></div>
+                  </div>
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div mobile-ab-fbt-chart
+                   ng-account="account"
+                   ng-app="application.app_id"
+                   fl-oses="oses"
+                   fl-devices="devices"
+                   fl-countries="countries"
+                   fl-operators="operators"
+                   fl-disabled="_loading || !application"
+                   fl-networks="networks"></div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div mobile-ab-fbt-distribution-chart
+                   ng-account="account"
+                   ng-app="application.app_id"
+                   fl-oses="oses"
+                   fl-devices="devices"
+                   fl-countries="countries"
+                   fl-operators="operators"
+                   fl-disabled="_loading || !application"
+                   fl-networks="networks"
+                   fl-interval="50"
+                   fl-limit="3000"></div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div mobile-ab-errors-chart
+                   ng-account="account"
+                   ng-app="application.app_id"
+                   fl-oses="oses"
+                   fl-devices="devices"
+                   fl-countries="countries"
+                   fl-operators="operators"
+                   fl-disabled="_loading || !application"
+                   fl-networks="networks"></div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div mobile-ab-speed-chart
+                   ng-account="account"
+                   ng-app="application.app_id"
+                   fl-oses="oses"
+                   fl-devices="devices"
+                   fl-countries="countries"
+                   fl-operators="operators"
+                   fl-disabled="_loading || !application"
+                   fl-networks="networks"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

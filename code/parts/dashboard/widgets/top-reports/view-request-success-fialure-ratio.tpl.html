@@ -1,0 +1,12 @@
+<div class="col-md-12 top-reports-request-completion">
+  <!-- <h3>Request Completion Success/Failure Ratio</h3>-->
+  <div class="alert alert-info" ng-if="!config.domain">
+    Please click on <i class="glyphicon glyphicon-cog"></i> icon to configure the widget
+  </div>
+  <div class="alert alert-info" ng-if="config.domain&&(!requestStatus || !requestStatus.length)">
+    No data to display
+  </div>
+  <div ng-if="requestStatus || requestStatus.length">
+    <div pie-chart ng-data="requestStatus"></div>
+  </div>
+</div>

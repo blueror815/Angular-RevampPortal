@@ -1,0 +1,161 @@
+<div class="domain-caching-rule ">
+  <div class="form-group">
+    <div class="col-md-offset-3  col-md-9">
+      <label class="radio-inline">
+        <input type="radio" ng-model="$ctrl.rule.url.is_wildcard" ng-value="false">Regular Expression
+      </label>
+      <label class="radio-inline">
+        <input type="radio" ng-model="$ctrl.rule.url.is_wildcard" ng-value="true">Wildcard Pattern
+      </label>
+    </div>
+    <label class="col-md-3 control-label">URL</label>
+    <div class="col-md-9">
+      <input type="text" class="form-control" ng-model="$ctrl.rule.url.value">
+    </div>
+  </div>
+  <hr>
+  <div class="form-group info">
+    <label class="col-sm-3">Edge Caching</label>
+  </div>
+  <div class="form-group form-inline">
+    <label for="override_origin" class="col-sm-3 control-label">
+      Override Origin Caching Headers
+    </label>
+    <div class="col-md-9">
+      <toggle-switch ng-model="$ctrl.rule.edge_caching.override_origin" on-label="On" off-label="Off">
+      </toggle-switch>
+    </div>
+  </div>
+  <div class="form-group form-inline">
+    <label class="col-sm-3 control-label"> Edge Cache TTL</label>
+    <div class="col-md-9">
+      <input type="number" class="form-control" min="0" max="99999999" ng-model="$ctrl.rule.edge_caching.new_ttl"> second(s)
+    </div>
+  </div>
+  <div class="form-group form-inline">
+    <label for="override_origin" class="col-sm-3 control-label">
+      Enforce New Edge Cache TTL If Origin Caching Headers Are Missing
+    </label>
+    <div class="col-md-9">
+      <toggle-switch ng-model="$ctrl.rule.edge_caching.override_no_cc" on-label="On" off-label="Off">
+      </toggle-switch>
+    </div>
+  </div>
+  <div class="form-group ">
+    <label class="col-sm-3 control-label">Keep Or Drop Query String Parameters</label>
+    <div class="col-sm-9">
+      <toggle-switch ng-model="$ctrl.rule.edge_caching.query_string_list_is_keep" on-label="Keep" off-label="Drop">
+      </toggle-switch>
+    </div>
+  </div>
+  <div class="form-group ">
+    <label class="col-sm-3 control-label">Query String Parameters To Drop/Keep</label>
+    <div class="col-sm-9">
+      <ui-select tagging tagging-label="Add New Query String" multiple tagging-tokens="SPACE|," theme="bootstrap" class="form-control" ng-disabled="_loading" ng-model="$ctrl.rule.edge_caching.query_string_keep_or_remove_list" id="query_str">
+        <ui-select-match placeholder="Add Query String ...">{{$item}}</ui-select-match>
+        <ui-select-choices repeat="query_str in $ctrl.rule.edge_caching.query_string_keep_or_remove_list">
+          {{query_str}}
+        </ui-select-choices>
+      </ui-select>
+    </div>
+  </div>
+  <hr>
+  <!-- Override HTTP Cookies-->
+  <div class="form-group ">
+    <label class="col-sm-3 control-label">Override HTTP Cookies</label>
+    <div class="col-sm-9">
+      <toggle-switch ng-model="$ctrl.rule.cookies.override" on-label="Yes" off-label="No">
+      </toggle-switch>
+    </div>
+  </div>
+  <div class="block-override--true" ng-if="$ctrl.rule.cookies.override == true">
+    <div class="form-group">
+      <label class="col-sm-3 control-label">Ignore All HTTP Cookies</label>
+      <div class="col-sm-9">
+        <toggle-switch ng-model="$ctrl.rule.cookies.ignore_all" on-label="Yes" off-label="No">
+        </toggle-switch>
+      </div>
+    </div>
+    <div class="form-group" ng-if="$ctrl.rule.cookies.ignore_all == false">
+      <label class="col-sm-3 control-label">Keep or Drop Specific HTTP Cookies</label>
+      <div class="col-sm-9">
+        <toggle-switch ng-model="$ctrl.rule.cookies.list_is_keep" on-label="Keep" off-label="Drop">
+        </toggle-switch>
+      </div>
+    </div>
+    <div class="form-group" ng-if="$ctrl.rule.cookies.ignore_all == false">
+      <label class="col-sm-3 control-label" ng-if="$ctrl.rule.cookies.list_is_keep == true">List Of Cookies To Keep</label>
+      <label class="col-sm-3 control-label" ng-if="$ctrl.rule.cookies.list_is_keep == false">List Of Cookies To Drop</label>
+      <div class="col-sm-9">
+        <ui-select tagging tagging-label="Add New Cookie String" multiple tagging-tokens="SPACE|," theme="bootstrap" class="form-control" ng-disabled="_loading" ng-model="$ctrl.rule.cookies.keep_or_ignore_list" id="keep_or_ignore_list_str">
+          <ui-select-match placeholder="Add Cookies String ...">{{$item}}</ui-select-match>
+          <ui-select-choices repeat="keep_or_ignore_list_str in $ctrl.rule.cookies.keep_or_ignore_list">
+            {{keep_or_ignore_list_str}}
+          </ui-select-choices>
+        </ui-select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-3 control-label" ng-if="$ctrl.rule.cookies.ignore_all == true">Remove Ignored Cookies From Origin Requests</label>
+      <label class="col-sm-3 control-label" ng-if="$ctrl.rule.cookies.ignore_all == false" ng-switch="$ctrl.rule.cookies.list_is_keep">
+        Remove <span ng-switch-when="false">Ignored</span><span ng-switch-when="true">Kept</span> Cookies From Origin Requests</label>
+      <div class="col-sm-9">
+        <toggle-switch ng-model="$ctrl.rule.cookies.remove_ignored_from_request" on-label="Yes" off-label="No">
+        </toggle-switch>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-3 control-label" ng-if="$ctrl.rule.cookies.ignore_all == true">Remove Ignored Cookies from Edge Responses</label>
+      <label class="col-sm-3 control-label" ng-if="$ctrl.rule.cookies.ignore_all == false" ng-switch="$ctrl.rule.cookies.list_is_keep">
+        Remove <span ng-switch-when="false">Ignored</span><span ng-switch-when="true">Kept</span> Cookies from Edge Responses</label>
+      <div class="col-sm-9">
+        <toggle-switch ng-model="$ctrl.rule.cookies.remove_ignored_from_response" on-label="Yes" off-label="No">
+        </toggle-switch>
+      </div>
+    </div>
+    <!-- // Keep or Drop Specific HTTP Cookies -->
+  </div>
+  <!-- //  Override HTTP Cookies-->
+  <hr>
+  <div class="form-group">
+    <label class="col-sm-3 ">Browser Caching</label>
+  </div>
+  <div class="form-group form-inline">
+    <label for="override_origin" class="col-sm-3 control-label">
+      Override Edge Caching
+    </label>
+    <div class="col-md-9">
+      <toggle-switch ng-model="$ctrl.rule.browser_caching.override_edge" on-label="On" off-label="Off">
+      </toggle-switch>
+    </div>
+  </div>
+  <div class="form-group form-inline" ng-show="$ctrl.rule.browser_caching.override_edge">
+    <label class="col-sm-3 control-label">Browser Caching TTL, seconds</label>
+    <div class="col-md-9">
+      <input type="number" class="form-control" min="0" max="3600" ng-model="$ctrl.rule.browser_caching.new_ttl">
+    </div>
+  </div>
+  <div class="form-group form-inline">
+    <label for="override_origin" class="col-sm-3 control-label">
+      Force Revalidation
+    </label>
+    <div class="col-md-9">
+      <toggle-switch ng-model="$ctrl.rule.browser_caching.force_revalidate" on-label="On" off-label="Off">
+      </toggle-switch>
+    </div>
+  </div>
+  <hr>
+  <div class="form-group">
+    <label class="col-sm-3">Manage Origin Request Headers</label>
+  </div>
+  <div class="form-group">
+    <origin-request-headers class="col-sm-12" ng-model="$ctrl.rule.origin_request_headers"></origin-request-headers>
+  </div>
+  <hr>
+  <div class="form-group">
+    <label class="col-sm-3">Manage End User Response Headers</label>
+  </div>
+  <div class="form-group">
+    <end-user-response-headers class="col-sm-12" ng-model="$ctrl.rule.end_user_response_headers "></end-user-response-headers>
+  </div>
+</div>

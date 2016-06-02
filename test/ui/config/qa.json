@@ -1,0 +1,13 @@
+{
+  "protractor": {
+    "seleniumAddress": "http://testsjc20-build01.revsw.net:4444/wd/hub"
+  },
+  "portal": {
+    "host": {
+      "protocol": "https",
+      "name": "testsjc20-portal01.revsw.net",
+      "port": null,
+      "path": null
+    }
+  }
+}

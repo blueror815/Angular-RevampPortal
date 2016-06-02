@@ -1,0 +1,39 @@
+
+<h3>Top Objects With 5XX Error Codes</h3>
+<div filter-top-objects
+     ng-hide="!ngDomain"
+     fl-os="flOs"
+     fl-country="flCountry"
+     fl-device="flDevice"
+     ng-filters="filters"
+     on-filter="loadDetails()"></div>
+<div class="alert alert-info" ng-if="!_loading && !codes.length">
+  No data to display
+</div>
+<div class="alert alert-info" ng-if="_loading">
+  <i class="glyphicon glyphicon-refresh spin"></i>&nbsp;
+  Loading
+</div>
+<div class="row margin-top" ng-if="ngDomain && codes.length">
+
+  <div ng-repeat="code in codes" class="col-md-12">
+    <h4>{{ code.name }} (Total: {{code.count}})</h4>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Request</th>
+        <th style="width: 10%;">Count</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="req in code.requests">
+          <td>
+            <a target="_blank" ng-href="http://{{ngDomain.domain_name}}{{req.request}}">{{req.request}}</a>
+          </td>
+          <td class="text-right">{{req.count}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

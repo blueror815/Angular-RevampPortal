@@ -1,0 +1,264 @@
+<div class="row" ng-init="initEdit(params.id)">
+  <div class="col-sm-12">
+    <h2 class="pull-left page-title">
+      Edit App <strong ng-if="model.app_name">{{model.app_name}}</strong>
+    </h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+            <div class="pull-left">
+              <a ui-sref="^" ng-disabled="_loading" class="btn btn-default">
+                <i class="glyphicon glyphicon-arrow-left"></i>&nbsp; Back To List
+              </a>
+              <a ui-sref="^.configure({id: model.id})" ng-disabled="_loading" class="btn btn-info">
+                <i class="glyphicon glyphicon-cog"></i>&nbsp; Advanced Mode
+              </a>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 row">
+            <div class="form-group form-horizontal">
+              <label for="sdk_release_version" class="col-sm-6 col-md-7 control-label">SDK Release Version</label>
+              <div class="col-sm-6 col-md-5">
+                <select class="form-control" ng-disabled="_loading" ng-model="selectedSDKVersion" id="sdk_release_version" ng-options="version for version in SDKVersionsInConfigs">
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 col-md-offset-9 col-lg-offset-0 col-lg-4">
+            <div class="btn-group pull-left">
+              <button type="button" class="btn btn-primary" ng-class="{'disabled': !availableSDKVersions.length}">
+                Add New Version
+              </button>
+              <button type="button" class="btn btn-primary dropdown-toggle" ng-class="{'disabled': !availableSDKVersions.length}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="disabled">
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="single-button">
+                <li role="menuitem" ng-repeat="version in availableSDKVersions">
+                  <a ng-disabled="disabled" ng-click="addNewSDKConfig(version, model)">{{version}}</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form name="editForm" class="form-horizontal" novalidate>
+          <div class="form-group" ng-class="{'has-error': editForm.app_name.$invalid && editForm.app_name.$dirty}">
+            <label for="app_name" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="App name (50 characters max)">App Name *</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="app_name" ng-disabled="_loading" ng-model="model.app_name" ng-maxlength="50" id="app_name" ng-pattern="/^[A-Za-z0-9 -]+$/" required>
+              <div class="error-messages" ng-messages="editForm.app_name.$error" role="alert">
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" ng-if="auth.isReseller() || auth.isRevadmin()" ng-class="{ 'has-error': editForm.accountId.$invalid && editForm.accountId.$dirty }">
+            <label for="account_id" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Select customer account the app name should be associated with">Account *</label>
+            <div class="col-sm-10">
+              <input type="hidden" ng-model="model.account_id" name="accountId" required></input>
+              <ui-select ng-model="model.account_id" theme="select2" ng-disabled="_loading" on-select="onAccountSelect($model)" style="min-width: 550px;" id="account_id" name="account_id">
+                <ui-select-match placeholder="Select Account">{{$select.selected.companyName}}</ui-select-match>
+                <ui-select-choices repeat="item.id as item in companies | filter: {companyName: $select.search}">
+                  <div ng-bind-html="item.companyName|highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+              <div class="has-error error-messages" ng-messages="editForm.accountId.$error" role="alert">
+                <div ng-message="required" class="alert-text alert-text--required">Please select a customer account</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="key" class="col-sm-2 control-label">SDK Key</label>
+            <div class="col-sm-10">
+              <button class="btn btn-primary" clipboard text="model.sdk_key" on-copied="copyCallback()" on-error="copyCallback(err)" style="vertical-align: initial;" uib-tooltip="Click to copy the key to the clipboard" tooltip-placement="top"><i class="fa fa-files-o"></i></button>
+              <button class="btn btn-primary" ng-click="switchKeyVisibility(model)" ng-hide="model.showKey" style="vertical-align: initial;">Show SDK Key</button>
+              <input id="key" ng-if="model.showKey" ng-blur="switchKeyVisibility(model)" class="form-control" value="{{model.sdk_key}}" style="width: 300px; display: inline-block; position: absolute; z-index: 999; margin-left: 4px;" focus-me="model.showKey">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="operation_mode" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Rev SDK operation mode">SDK Operation Mode</label>
+            <div class="col-sm-10">
+              <select class="form-control" ng-disabled="_loading" ng-model="configuration.operation_mode" id="operation_mode">
+                <option value="transfer_and_report">Transfer And Report</option>
+                <option value="transfer_only">Transfer Only</option>
+                <option value="report_only">Report Only</option>
+                <option value="off">Off</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">SDK Events Logging Level</label>
+            <div class="col-sm-10">
+              <label>
+                <input type="radio" ng-model="configuration.logging_level" value="debug"> Debug
+              </label>
+              <label>
+                <input type="radio" ng-model="configuration.logging_level" value="info"> Info
+              </label>
+              <label>
+                <input type="radio" ng-model="configuration.logging_level" value="warning"> Warning
+              </label>
+              <label>
+                <input type="radio" ng-model="configuration.logging_level" value="error"> Error
+              </label>
+              <label>
+                <input type="radio" ng-model="configuration.logging_level" value="critical"> Critical
+              </label>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{'has-error': editForm.refresh_interval.$invalid && editForm.refresh_interval.$dirty }">
+            <label for="configuration_refresh_interval_sec" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="SDK configuration refresh interval in seconds (range 60-604800)">Configuration Refresh Interval (seconds)</label>
+            <div class="col-sm-10">
+              <input type="number" class="form-control" name="refresh_interval" ng-disabled="_loading" ng-model="configuration.configuration_refresh_interval_sec" id="configuration_refresh_interval_sec" ng-min="60" ng-max="604800" required>
+              <div class="error-messages" ng-messages="editForm.refresh_interval.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{ 'has-error': editForm.stale_timeout.$invalid &&
+                editForm.stale_timeout.$dirty }">
+            <label for="configuration_stale_timeout_sec" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="SDK configuration stale timeout in seconds (range 60-604800)">Configuration Stale Timeout (seconds)</label>
+            <div class="col-sm-10">
+              <input type="number" class="form-control" name="stale_timeout" ng-disabled="_loading" ng-model="configuration.configuration_stale_timeout_sec" id="configuration_stale_timeout_sec" ng-min="60" ng-max="604800" required>
+              <div class="error-messages" ng-messages="editForm.stale_timeout.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="allowed_transport_protocols" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Rev SDK allowed last mile transport protocols">Allowed Transport Protocols</label>
+            <div class="col-sm-10" id="allowed-transport-protocols">
+              <span ng-repeat="protocol in protocols">
+              <input
+                type="checkbox"
+                value="{{protocol}}"
+                ng-checked="configuration.allowed_transport_protocols.indexOf(protocol) > -1"
+                ng-click="toggleProtocolSelection(protocol, configuration)"
+              >
+              {{protocol.toUpperCase()}}
+            </span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="initial_transport_protocol" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Rev SDK initial last mile transport protocol">Initial Transport Protocol</label>
+            <div class="col-sm-10">
+              <select class="form-control" ng-disabled="_loading" ng-model="configuration.initial_transport_protocol" id="initial_transport_protocol">
+                <option value="standard">Standard</option>
+                <option value="quic">QUIC</option>
+                <option value="rmp">RMP</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="stats_reporting_level" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="SDK analytics reporting level">Analytics Reporting Level</label>
+            <div class="col-sm-10">
+              <select class="form-control" ng-disabled="_loading" ng-model="configuration.stats_reporting_level" id="stats_reporting_level">
+                <option value="info">Info</option>
+                <option value="debug">Debug</option>
+                <option value="error">Error</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{ 'has-error': editForm.reporting_interval.$invalid &&
+                editForm.reporting_interval.$dirty }">
+            <label for="stats_reporting_interval_sec" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="SDK analytics reporting interval in seconds (range 20-3600)">Analytics Reporting Interval (seconds) *</label>
+            <div class="col-sm-10">
+              <input type="number" class="form-control" name="reporting_interval" ng-disabled="_loading" ng-model="configuration.stats_reporting_interval_sec" id="stats_reporting_interval_sec" min="20" max="3600" required>
+              <div class="error-messages" ng-messages="editForm.reporting_interval.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{'has-error': editForm.domainsWhiteList.$invalid && editForm.domainsWhiteList.$dirty}">
+            <label for="domains_white_list" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="'White list' of domains which are allowed to be served via RevAPM (all other domains will be served directly from the customer origin server)">Domains White List</label>
+            <div class="col-sm-10">
+              <ui-select validate-domains-list tagging tagging-label="Add New Domain" name="domainsWhiteList" multiple tagging-tokens="SPACE|," theme="bootstrap" class="form-control" ng-disabled="_loading" ng-model="configuration.domains_white_list" id="domains_white_list">
+                <ui-select-match placeholder="Add domains...">{{$item}}</ui-select-match>
+                <ui-select-choices repeat="domain in configuration.domains_white_list">
+                  {{domain}}
+                </ui-select-choices>
+              </ui-select>
+              <div class="error-messages" ng-messages="editForm.domainsWhiteList.$error" role="alert">
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{'has-error': editForm.domainsBlackList.$invalid && editForm.domainsBlackList.$dirty}">
+            <label for="domains_black_list" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="'Black list' of domains which should be always served directly from domain origin servers">Domains Black List</label>
+            <div class="col-sm-10">
+              <ui-select validate-domains-list tagging tagging-label="Add New Domain" name="domainsBlackList" multiple tagging-tokens="SPACE|," theme="bootstrap" class="form-control" ng-disabled="_loading" ng-model="configuration.domains_black_list" id="domains_black_list">
+                <ui-select-match placeholder="Add domains...">{{$item}}</ui-select-match>
+                <ui-select-choices repeat="domain in configuration.domains_black_list">
+                  {{domain}}
+                </ui-select-choices>
+              </ui-select>
+              <div class="error-messages" ng-messages="editForm.domainsBlackList.$error" role="alert">
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="domains_provisioned_list " popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="'Provisioned' domains which are registered in the 'Web' section of the portal and provide full middle-mile acceleration">Domains Provisioned List</label>
+            <div class="col-sm-10">
+              <ui-select multiple tagging-tokens="SPACE|," theme="bootstrap" class="form-control" ng-if="getAccountDomainNameList(model.account_id).length>0" ng-disabled="_loading" ng-model="configuration.domains_provisioned_list" id="domains_provisioned_list ">
+                <ui-select-match placeholder="{{domainsListPlaceholder}}">{{$item}}</ui-select-match>
+                <ui-select-choices repeat="domain  in  getAccountDomainNameList(model.account_id)">
+                  {{domain}}
+                </ui-select-choices>
+              </ui-select>
+              <input type="text" class="form-control" placeholder="Please provision a domain first..." ng-if="getAccountDomainNameList(model.account_id).length == 0" disabled>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error': editForm.ratio.$invalid &&
+                editForm.ratio.$dirty }">
+            <label for="a_b_testing_origin_offload_ratio" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="A/B testing offloading ratio in % (range 0-100). The specified percentage of traffic will be served directly from the application origin server">A/B Testing Offloading Ratio In % *</label>
+            <div class="col-sm-10">
+              <input type="number" min="0" max="100" class="form-control" name="ratio" ng-disabled="_loading" ng-model="configuration.a_b_testing_origin_offload_ratio" id="a_b_testing_origin_offload_ratio" min="0" max="100" required>
+              <div class="error-messages" ng-messages="editForm.ratio.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{ 'has-error': editForm.comment.$invalid &&
+                                      editForm.comment.$dirty }">
+            <label for="comment" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Comment (300 characters max)">Comment</label>
+            <div class="col-sm-10">
+              <textarea id="comment" class="form-control" name="comment" ng-model="model.comment" placeholder="Comment (300 characters max)" ng-maxlength="300" ng-disabled="_loading">
+              </textarea>
+              <div class="error-messages" ng-messages="editForm.comment.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="col-sm-offset-2 col-sm-10">
+            <a ui-sref="^" ng-disabled="_loading" class="btn btn-default">
+              <i class="glyphicon glyphicon-remove"></i>&nbsp; Cancel
+            </a>
+            <button class="btn btn-info" ng-disabled="_loading || editForm.$invalid" ng-click="verify(model, configuration)">
+              <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+              <i class="glyphicon glyphicon-check" ng-if="!_loading"></i>&nbsp; Verify
+            </button>
+            <button class="btn btn-success" ng-disabled="_loading || editForm.$invalid" ng-click="updateConfig(model, configuration)">
+              <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+              <i class="glyphicon glyphicon-file" ng-if="!_loading"></i>&nbsp; Update
+            </button>
+            <button class="btn btn-success" ng-disabled="_loading || editForm.$invalid" ng-click="publish(model, configuration)">
+              <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+              <i class="glyphicon glyphicon-ok" ng-if="!_loading"></i>&nbsp; Publish
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

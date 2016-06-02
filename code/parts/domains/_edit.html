@@ -1,0 +1,187 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h2 class="pull-left page-title">
+      Edit Domain {{model.domain_name}}
+    </h2>
+  </div>
+</div>
+
+<div class="row" ng-init="getDomain(params.id)">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="pull-left">
+              <a ui-sref="^"
+                 ng-disabled="_loading"
+                 class="btn btn-default">
+                <i class="glyphicon glyphicon-arrow-left"></i>&nbsp;
+                Back To List
+              </a>
+              <a ui-sref="^.advanced({id: params.id})"
+                 ng-disabled="_loading"
+                 class="btn btn-info">
+
+                <i class="glyphicon glyphicon-cog"></i>&nbsp;
+                Advanced Mode
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="panel-body">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label for="domain_name"
+                   class="col-sm-2 control-label"
+                   popover-trigger="mouseenter"
+                   >Domain Name</label>
+
+            <div class="col-sm-10">
+              <input type="text"
+                     class="form-control"
+                     disabled
+                     autofocus
+                     ng-model="model.domain_name"
+                     id="domain_name"
+                     placeholder="Domain Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cname"
+                   class="col-sm-2 control-label"
+                   popover-trigger="mouseenter"
+                   >Domain CNAME</label>
+
+            <div class="col-sm-10">
+              <input type="text"
+                     class="form-control"
+                     disabled
+                     ng-model="model.cname"
+                     id="cname"
+                     placeholder="Domain CNAME">
+            </div>
+          </div>
+          <div class="form-group" ng-if="auth.isReseller() || auth.isRevadmin()">
+            <label for="account_id"
+                   popover-append-to-body="{{true}}"
+                   class="col-sm-2 control-label"
+                   popover-trigger="mouseenter"
+                   popover="Select company name the domain should be associated with">Company</label>
+
+            <div class="col-sm-10">
+              <select class="form-control"
+                      ng-disabled="_loading"
+                      ng-model="model.account_id"
+                      id="account_id"
+                      ng-options="obj.id as obj.companyName for obj in companies">
+                <option value="">--- Select Company ---</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="origin_server"
+                   popover-append-to-body="{{true}}"
+                   class="col-sm-2 control-label"
+                   popover-trigger="mouseenter"
+                   popover="Enter here domain name or IP address of origin web server">Origin Server Name/IP</label>
+
+            <div class="col-sm-10">
+              <input type="text"
+                     class="form-control"
+                     ng-disabled="_loading"
+                     ng-model="model.origin_server"
+                     id="origin_server"
+                     placeholder="Origin Server Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="origin_host_header"
+                   popover-append-to-body="{{true}}"
+                   class="col-sm-2 control-label"
+                   popover-trigger="mouseenter"
+                   popover="Enter here a domain name to be used in 'Host' header in requests sent from RevAPM to the origin server">Origin Host Header</label>
+
+            <div class="col-sm-10">
+              <input type="text"
+                     class="form-control"
+                     ng-model="model.origin_host_header"
+                     ng-disabled="_loading"
+                     id="origin_host_header"
+                     placeholder="Origin Host Header">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="origin_server_location_id"
+                   popover-append-to-body="{{true}}"
+                   class="col-sm-2 control-label"
+                   popover-trigger="mouseenter"
+                   popover="Select a RevAPM location closest to the location of the origin server">Domain Origin Location</label>
+
+            <div class="col-sm-10">
+              <select class="form-control"
+                      ng-disabled="_loading"
+                      ng-model="model.origin_server_location_id"
+                      id="origin_server_location_id"
+                      ng-options="obj.id as obj.locationName for obj in locations">
+                <option value="">--- Select Location ---</option>
+              </select>
+            </div>
+          </div>
+          <!--
+          <div class="form-group">
+            <label for="tolerance"
+                   popover-append-to-body="{{true}}"
+                   class="col-sm-2 control-label"
+                   popover-trigger="mouseenter"
+                   popover="Web page performance threshold used for RUM heatmap report. Recommended value is 3000 ms.">Threshold</label>
+
+            <div class="col-sm-10">
+              <input type="text"
+                     class="form-control"
+                     ng-disabled="_loading"
+                     ng-model="model.tolerance"
+                     id="tolerance"
+                     placeholder="Time in milliseconds">
+            </div>
+          </div>
+          -->
+          <hr>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button class="btn btn-info"
+                      ng-disabled="_loading"
+                      ng-click="validateDomain(model)">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                <i class="glyphicon glyphicon-ok" ng-if="!_loading"></i>&nbsp;
+                Validate Domain
+              </button>
+              <button class="btn btn-success"
+                      ng-disabled="_loading"
+                      ng-click="updateDomain(model)">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                <i class="glyphicon glyphicon-ok" ng-if="!_loading"></i>&nbsp;
+                Update Domain
+              </button>
+              <button class="btn btn-success"
+                      ng-disabled="_loading"
+                      ng-click="publishDomain(model)">
+                <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i>
+                <i class="glyphicon glyphicon-ok" ng-if="!_loading"></i>&nbsp;
+                Publish Domain
+              </button>
+              <a ui-sref="^" class="btn btn-default">
+                <i class="glyphicon glyphicon-remove"></i>&nbsp;
+                Cancel
+              </a>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

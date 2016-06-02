@@ -1,0 +1,71 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        App Versions: <strong>{{model.app_name}}</strong>
+      </h2>
+    </div>
+  </div>
+
+  <div class="row" ng-init="initVersions()">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <a ui-sref="^"
+                   ng-disabled="_loading"
+                   class="btn btn-default">
+                  <i class="glyphicon glyphicon-arrow-left"></i>&nbsp;
+                  Back To List
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <alert type="danger" ng-if="!id">Please select an app</alert>
+
+          <form class="form-horizontal" ng-show="id">
+
+            <div class="form-group">
+
+              <div class="col-md-12">
+                <select name="versions"
+                        id="versions"
+                        class="form-control"
+                        ng-disabled="_loading"
+                        ng-model="currentVersion"
+                        ng-change="onChangeVersion()"
+                        ng-options="ver.updated_at as format(ver) for ver in versions">
+                  <option value="">Please Select App Configuration Version</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div  class="col-md-12">
+               <pre
+                hljs
+                hljs-source = "obj.data"
+                class="col-md-12">
+               </pre>
+
+                <div class="col-sm-12" style="margin-top: 15px">
+                  <a ui-sref="^"
+                     ng-disabled="_loading"
+                     class="btn btn-default">
+                    <i class="glyphicon glyphicon-remove"></i>&nbsp;
+                    Cancel
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

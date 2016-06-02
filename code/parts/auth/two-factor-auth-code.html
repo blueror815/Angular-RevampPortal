@@ -1,0 +1,25 @@
+<div class="modal-header">
+  <h3 class="modal-title">Enter Your One Time Password</h3>
+</div>
+<div class="modal-body">
+  <alert-list></alert-list>
+  <form class="form-horizontal" ng-submit="login()">
+    <div class="form-group">
+      <div class="col-sm-8 col-sm-offset-2">
+        <input type="text"
+               class="form-control"
+               ng-model="data.code"
+               id="code"
+               placeholder="Enter Your Code here"
+               ng-disabled="data.loading"
+               required
+               autofocus>
+      </div>
+    </div>
+  </form>
+
+</div>
+<div class="modal-footer">
+  <button class="btn btn-default" type="button" ng-click="close()">Cancel</button>
+  <button class="btn btn-primary" type="button" ng-click="login()" ng-disabled="!data.code">Submit</button>
+</div>

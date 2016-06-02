@@ -1,0 +1,73 @@
+<div class="container" ui-view="page">
+  <div class="row">
+    <div class="panel panel-default text-center">
+      <div class="panel-body">
+        <div class="row">
+          <div class="text-center col-md-4">
+            <a href="https://www.revapm.com/" target="_blank">
+              <img class="img-responsive" src="images/logo_color.png" alt="Logo" />
+            </a>
+          </div>
+          <div class="col-md-4 text-center ">
+            <h1 class="signup">Verification</h1></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <!-- <div class="panel-heading">
+        </div> -->
+        <div class="panel-body" ng-switch="steps">
+          <div class="row" ng-switch-when="verify-token">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <p class="h3">Verifying the token....</p>
+              </div>
+            </div>
+          </div>
+          <div class="row" ng-switch-when="verify-token-success">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <h1>Thank you for verifying your email address!</h1>
+              </div>
+            </div>
+          </div>
+          <div class="row" ng-switch-when="verify-token-success">
+            <div class="col-md-12">
+              <p>
+                In a few seconds you will be automatically redirected to our Customer Portal.
+              </p>
+            </div>
+          </div>
+          <div class="row" ng-switch-when="verify-token-error">
+            <div class="col-md-12">
+              <p class="lead">
+                Something went wrong - the system cannot accept your email verification token. Would you like us to resend the verification email so you could try again?
+              </p>
+              <form class="col-sm-offset-2 col-sm-8 form-horizontal" ng-submit="resendToken(model)" novalidate name="verifyForm">
+                <div class="form-group" ng-class="{ 'has-error': verifyForm.email.$invalid &&
+                                verifyForm.email.$dirty }">
+                  <label for="email" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="We will send a new verification token to this email">Email *</label>
+                  <div class="col-sm-10">
+                    <input type="email" autofocus class="form-control" id="email" name="email" placeholder="Email" ng-model="model.email" ng-disabled="_loading" required>
+                    <span ng-show="!!verifyForm['email'].$error.email" style="color:red">Please use format example@example.com</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <input type="submit" class="btn btn-success" value="Resend Token" ng-disabled="_loading || verifyForm.$invalid">
+                  </div>
+                </div>
+              </form>
+              <p class="lead pull-right">
+                If the problem persist please contact us at <a href="mailto:support@revapm.com?&subject=Verification%20Problem">support@revapm.com</a>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

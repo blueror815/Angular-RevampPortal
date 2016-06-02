@@ -1,0 +1,151 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Top Objects Reports</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+
+                <form class="form-inline">
+                  <div class="form-group">
+                    <div app-select ng-model="application" on-select="reloadDirs()"></div>
+                  </div>
+
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div mobile-top-objects
+                   ng-account="account"
+                   ng-app="application.app_id"
+                   fl-oses="oses"
+                   fl-devices="devices"
+                   fl-countries="countries"
+                   fl-operators="operators"
+                   fl-networks="networks"
+                   fl-disabled="_loading || !application"
+                   heading="Top Most Requested Objects"></div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div mobile-top-objects-time
+                   ng-account="account"
+                   ng-app="application.app_id"
+                   fl-oses="oses"
+                   fl-devices="devices"
+                   fl-countries="countries"
+                   fl-operators="operators"
+                   fl-networks="networks"
+                   fl-disabled="_loading || !application"
+                   report-type="full"
+                   heading="Top Objects With Slowest Response Time"></div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div mobile-top-objects-time
+                   ng-account="account"
+                   ng-app="application.app_id"
+                   fl-oses="oses"
+                   fl-devices="devices"
+                   fl-countries="countries"
+                   fl-operators="operators"
+                   fl-networks="networks"
+                   fl-disabled="_loading || !application"
+                   report-type="first_byte"
+                   heading="Top Objects With Slowest First Byte Time"></div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div mobile-top-objects
+                   ng-account="account"
+                   ng-app="application.app_id"
+                   fl-oses="oses"
+                   fl-devices="devices"
+                   fl-countries="countries"
+                   fl-operators="operators"
+                   fl-networks="networks"
+                   fl-disabled="_loading || !application"
+                   report-type="not_found"
+                   heading="Top Objects With 404 Responses"></div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div mobile-top-objects
+                   ng-account="account"
+                   ng-app="application.app_id"
+                   fl-oses="oses"
+                   fl-devices="devices"
+                   fl-countries="countries"
+                   fl-operators="operators"
+                   fl-networks="networks"
+                   fl-disabled="_loading || !application"
+                   report-type="cache_missed"
+                   heading="Top Objects With Cache Misses"></div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div mobile-top-objects
+                   ng-account="account"
+                   ng-app="application.app_id"
+                   fl-oses="oses"
+                   fl-devices="devices"
+                   fl-countries="countries"
+                   fl-operators="operators"
+                   fl-networks="networks"
+                   fl-disabled="_loading || !application"
+                   report-type="failed"
+                   heading="Top Objects With Completion Failures"></div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div mobile-top-objects-5xx
+                   ng-account="account"
+                   ng-app="application.app_id"
+                   fl-oses="oses"
+                   fl-devices="devices"
+                   fl-countries="countries"
+                   fl-operators="operators"
+                   fl-networks="networks"
+                   fl-disabled="_loading || !application"
+                   heading="Top Objects With 5XX Error Codes"></div>
+            </div>
+          </div>
+          <hr>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

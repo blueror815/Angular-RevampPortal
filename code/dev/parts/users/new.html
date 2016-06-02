@@ -1,0 +1,153 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h2 class="pull-left page-title">
+      Add New User
+    </h2>
+  </div>
+</div>
+<div class="row" ng-init="initNew()">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="pull-left">
+              <a ui-sref="^" class="btn btn-info">
+                <i class="glyphicon glyphicon-arrow-left"></i>&nbsp; Back To List
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form name="createForm" class="form-horizontal" novalidate>
+          <div class="form-group" ng-class="{'has-error': createForm.email.$invalid && createForm.email.$dirty}">
+            <label for="email" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="New user's email address - the address should be unique across the system">Email *</label>
+            <div class="col-sm-10">
+              <input type="email" autofocus class="form-control" id="email" name="email" placeholder="Email" ng-model="model.email" ng-disabled="_loading" required>
+              <div class="error-messages" ng-messages="createForm.email.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{'has-error': createForm.firstName.$invalid && createForm.firstName.$dirty}">
+            <label for="firstname" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="First name">First Name *</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="firstname" name="firstName" placeholder="First Name" ng-model="model.firstname" ng-disabled="_loading" required>
+              <div class="error-messages" ng-messages="createForm.firstName.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{'has-error': createForm.lastName.$invalid && createForm.lastName.$dirty}">
+            <label for="lastName" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Last name">Last Name *</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" ng-model="model.lastname" ng-disabled="_loading" required>
+              <div class="error-messages" ng-messages="createForm.lastName.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{'has-error': createForm.role.$invalid && createForm.role.$dirty}">
+            <label for="role" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Select here the user's role in management of the account">Role *</label>
+            <div class="col-sm-10">
+              <select class="form-control" id="role" name="role" ng-model="model.role" ng-disabled="_loading" ng-options="role for role in roles" required>
+                <option value="">--- Select Role ---</option>
+              </select>
+              <div class="error-messages" ng-messages="createForm.role.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{'has-error': createForm.app_name.$invalid && createForm.app_name.$dirty}" ng-if="auth.isReseller() || auth.isRevadmin()">
+            <label for="company" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Select here account the user should be associated with">Accounts *</label>
+            <div class="col-sm-10">
+              <ui-select ng-show="!_loading && companies.length>0" multiple theme="bootstrap" class="form-control" ng-disabled="_loading" ng-model="model.companyId" id="company" on-select="onAccountSelect($model)">
+                <ui-select-match placeholder="Add account...">{{$item.companyName}}</ui-select-match>
+                <ui-select-choices repeat="item.id as  item in companies | filter: {companyName: $select.search}">
+                  <div ng-bind-html="item.companyName|highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{'has-error': createForm.domain.$invalid && createForm.domain.$dirty}">
+            <label for="domain" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Select domain names the user should be allowed to manage">Domains</label>
+            <div class="col-sm-10">
+              <ui-select validate-domains-list ng-show="!_loading" multiple theme="bootstrap" class="form-control" ng-disabled="_loading" ng-model="model.domain" id="domain" name="domain">
+                <ui-select-match placeholder="{{getDomainPlaceholder()}}">{{$item.domain_name}}</ui-select-match>
+                <ui-select-choices repeat="item.domain_name as item  in getAccountDomainNameList()| filter: {domain_name: $select.search}">
+                  <div ng-bind-html="item.domain_name|highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+              <div class="error-messages" ng-messages="createForm.domain.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="form-group">
+            <label for="access_control_list" popover-append-to-body="{{true}}" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Set here the new user's access control permissions">Access Control List</label>
+            <div class="col-sm-10">
+              <div>
+                <input type="checkbox" disabled ng-model="model.access_control_list.dashBoard"> Dashboard
+              </div>
+              <div>
+                <input type="checkbox" ng-model="model.access_control_list.reports"> Reports
+              </div>
+              <div>
+                <input type="checkbox" ng-model="model.access_control_list.configure"> Configure
+              </div>
+              <div>
+                <input type="checkbox" ng-model="model.access_control_list.test"> Test
+              </div>
+              <div>
+                <input type="checkbox" ng-model="model.access_control_list.readOnly"> Read Only
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="form-group" ng-class="{'has-error': createForm.password.$invalid && createForm.password.$dirty}">
+            <label for="password" class="col-sm-2 control-label" popover-trigger="mouseenter">Password *</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="password" name="password" ng-model="model.password" ng-disabled="_loading" required>
+              <div class="error-messages" ng-messages="createForm.password.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{'has-error': createForm.passwordConfirm.$invalid && createForm.passwordConfirm.$dirty}">
+            <label for="passwordConfirm" class="col-sm-2 control-label" popover-trigger="mouseenter">Confirm Password *</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm" ng-model="model.passwordConfirm" ng-disabled="_loading" required>
+              <div class="error-messages" ng-messages="createForm.passwordConfirm.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="form-group" ng-class="{ 'has-error': createForm.comment.$invalid && createForm.comment.$dirty }">
+            <label for="comment" class="col-sm-2 control-label" popover-trigger="mouseenter" uib-popover="Comment">Comment</label>
+            <div class="col-sm-10">
+              <textarea id="comment" placeholder="Comment (300 characters max)" ng-maxlength="300" class="form-control" name="comment" ng-model="model.comment" ng-disabled="_loading">
+              </textarea>
+              <div class="error-messages" ng-messages="createForm.comment.$error" role="alert" ng-messages-multiple>
+                <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <a ui-sref="{{state}}" class="btn btn-default">
+                <i class="glyphicon glyphicon-remove"></i>&nbsp; Cancel
+              </a>
+              <button class="btn btn-success" ng-disabled="disableSubmit(model)" ng-click="createUser(model)">
+                <i class="glyphicon glyphicon-ok"></i>&nbsp; Create User
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

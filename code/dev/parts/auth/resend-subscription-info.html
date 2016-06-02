@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h3 class="modal-title">You still need to confirm your email address</h3>
+</div>
+<div class="modal-body">
+  <alert-list></alert-list>
+  <form class="form-horizontal" ng-submit="forgot()">
+    <div class="form-group ">
+      <p class="col-md-12 text-center">It looks like you still need to confirm the correctness of your email address - you are supposed to receive an email from RevAPM asking to click a confirmation link (you may also want to check your spam mailbox).</p>
+      <p class="col-md-12 text-center">If you have not received such email please click <strong> “Resend” </strong> button below to resend the email. If this will not help please contact us at support@revapm.com.</p>
+      <div class="col-sm-8 col-sm-offset-2">
+        <input type="hidden" class="form-control" ng-model="data.email" id="email" placeholder="Enter your email here" ng-disabled="data.loading" required autofocus>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-default" type="button" ng-click="close()">Cancel</button>
+  <button class="btn btn-primary" type="button" ng-click="onResendEmail()" ng-disabled="!data.email">Resend</button>
+</div>

@@ -1,0 +1,11 @@
+<ul class="nav navbar-nav">
+  <!--<li><a href="#">Dashboard</a></li>-->
+  <!--<li><a href="#">DNS</a></li>-->
+  <li ng-class="{active: $state.includes('index.apps')}"><a ui-sref="index.apps.ios" class="two-line">Mobile Apps</a></li>
+  <li ng-class="{active: $state.includes('index.mobile')}"><a ui-sref="index.mobile.traffic" class="two-line">Mobile Analytics</a></li>
+  <li ng-class="{active: $state.includes('index.webApp')}"><a ui-sref="index.webApp.domains" class="two-line">Web</a></li>
+  <li ng-class="{active: $state.includes('index.reports')}"><a ui-sref="index.reports.proxy" class="two-line">Web Analytics</a></li>
+  <li ng-class="{active: $state.includes('index.accountSettings')}"><a ui-sref="index.accountSettings.users" class="two-line">Admin</a></li>
+  <li ng-class="{active: $state.includes('index.help')}"><a ui-sref="index.help" class="two-line">Support</a></li>
+</ul>
+<div user-login-logout></div>

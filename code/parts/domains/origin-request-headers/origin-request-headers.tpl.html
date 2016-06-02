@@ -1,0 +1,49 @@
+<div class="origin-request-headers">
+  <div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading"> Origin Request Headers</div>
+    <!--     <div class="panel-body">
+      <p>...</p>
+    </div> -->
+    <!-- Table -->
+    <table class="table table-headers-info">
+      <thead>
+      <tr>
+        <th>Header Name</th>
+        <th>Header Value</th>
+        <th class="table-title--operation">Operation</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="line in $ctrl.origin_request_headers">
+          <td>{{line.header_name }}</td>
+          <td>{{line.header_value }} </td>
+          <td>{{line.operation}}</td>
+          <td><button class="btn btn-warning btn-xs btn-delete-origin_request_header" type="button" ng-click="$ctrl.onDelete($index)" title="Delete Header">
+              <i class="glyphicon glyphicon-remove"> Delete</i>
+            </button> </td>
+        </tr>
+        <!-- New line-->
+        <tr ng-form="newLineForm" class="well">
+          <td>
+            <input type="text" name="header_name" class="form-control" ng-model="$ctrl.newOriginRequestHeader.header_name" placeholder="New Header Name" required>
+          </td>
+          <td>
+            <input type="text" name="header_value" class="form-control" ng-model="$ctrl.newOriginRequestHeader.header_value" placeholder="New Header Value" required>
+          </td>
+          <td>
+            <select class="form-control" ng-model="$ctrl.newOriginRequestHeader.operation">
+              <option value="add">Add</option>
+              <option value="replace">Replace</option>
+              <option value="remove">Remove</option>
+            </select>
+          </td>
+          <td>
+            <button type="button" class="btn btn-success" ng-disabled="!newLineForm.$valid" ng-click="$ctrl.onAddNew($ctrl.newOriginRequestHeader)" title="Add New Header"><i class="glyphicon glyphicon-plus"></i> Add New</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

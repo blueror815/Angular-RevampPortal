@@ -1,0 +1,158 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h2 class="pull-left page-title">
+      Edit API Key
+    </h2>
+  </div>
+</div>
+
+<div class="row" ng-init="loadKeyDetails(params.id)">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="pull-left">
+              <a ng-click="goToList()" class="btn btn-info">
+                <i class="glyphicon glyphicon-arrow-left"></i>&nbsp;
+                Back To List
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="panel-body">
+
+        <form class="form-horizontal" name="editForm" ng-submit="ok()">
+          <div class="form-group" ng-class="{'has-error': editForm.keyName.$invalid && editForm.keyName.$dirty}">
+            <label for="keyName"
+                   class="col-sm-2 control-label"
+            >API Key Name</label>
+
+            <div class="col-sm-10">
+              <input type="text"
+                     class="form-control"
+                     ng-model="key.key_name"
+                     id="key_name"
+                     name="keyName"
+                     ng-disabled="_loading"
+                     placeholder="Api Key name" required>
+              <div class="error-messages" ng-messages="editForm.keyName.$error" role="alert" ng-messages-multiple>
+                  <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="key"
+                   class="col-sm-2 control-label"
+            >API Key</label>
+
+            <div class="col-sm-10">
+              <button class="btn btn-primary" clipboard text="key.key" on-copied="copyCallback()" on-error="copyCallback(err)" style="vertical-align: initial;"  uib-tooltip="Click to copy the key to the clipboard" tooltip-placement="top"><i class="fa fa-files-o"></i></button>
+              <button class="btn btn-primary" ng-click="switchKeyVisibility(key)" ng-hide="key.showKey" style="vertical-align: initial;">Show API Key</button>
+              <!-- TODO - re-base style-->
+              <input id="key" ng-if="key.showKey" ng-blur="switchKeyVisibility(key)" class="form-control" value="{{key.key}}" style="width: 300px; display: inline-block; position: absolute; z-index: 999; margin-left: 4px;" focus-me="key.showKey">
+            </div>
+          </div>
+          <!-- TODO: change rule ng-hide on isAdmin (?)-->
+          <div class="form-group" ng-hide="!companies || companies.length == 1"  ng-class="{'has-error': editForm.accountId.$invalid && editForm.accountId.$dirty}">
+            <label for="account_id"
+                   class="col-sm-2 control-label">Account</label>
+            <div class="col-sm-4">
+               <ui-select ng-model="key.account_id" theme="select2" ng-disabled="_loading" on-select="onAccountSelect($model)" style="min-width: 550px;" id="account_id" name="accountId" required>
+                <ui-select-match placeholder="Select Account">{{$select.selected.companyName}}</ui-select-match>
+                <ui-select-choices repeat="item.id as item in companies | filter: {companyName: $select.search}">
+                  <div ng-bind-html="item.companyName|highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+              <div class="error-messages" ng-messages="editForm.accountId.$error" role="alert" ng-messages-multiple>
+                  <div ng-messages-include="parts/shared/error-messages.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="active"
+                   class="col-sm-2 control-label"
+                   ng-disabled="_loading"
+            >Active</label>
+
+            <div class="col-sm-10">
+              <input type="checkbox"
+                     id="active"
+                     ng-model="key.active"
+                     ng-disabled="_loading">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="read_only_status"
+                   class="col-sm-2 control-label"
+            >Read Only</label>
+
+            <div class="col-sm-10">
+              <input type="checkbox"
+                     id="read_only_status"
+                     ng-model="key.read_only_status"
+                     ng-disabled="_loading">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="domains"
+                   class="col-sm-2 control-label"
+                   popover-trigger="mouseenter"
+                   uib-popover="Managed Domains">Managed Domains</label>
+
+            <div class="col-sm-10">
+              <ui-select id="domains"
+                         multiple
+                         ng-disabled="_loading"
+                         ng-model="key.domains"
+                         style="width: 100%;">
+                <ui-select-match placeholder="Select Domains">{{$item.domain_name}}</ui-select-match>
+                <ui-select-choices repeat="item.id as item in selectedDomains | filter: {domain_name: $select.search}">
+                  <small>{{item.domain_name}}</small>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+
+          <hr>
+          <div class="form-group">
+            <label popover-append-to-body="{{true}}"
+                   class="col-sm-2 control-label"
+                   popover-trigger="mouseenter"
+                   uib-popover="Permissions">Permissions</label>
+
+            <div class="col-sm-10">
+                <div class="col-sm-10">
+                  <input type="checkbox" ng-model="key.allowed_ops.read_config" ng-disabled="_loading"> Read <br>
+                  <input type="checkbox" ng-model="key.allowed_ops.modify_config" ng-disabled="_loading"> Modify <br>
+                  <input type="checkbox" ng-model="key.allowed_ops.delete_config" ng-disabled="_loading"> Delete <br>
+                  <input type="checkbox" ng-model="key.allowed_ops.purge" ng-disabled="_loading"> Purge <br>
+                  <input type="checkbox" ng-model="key.allowed_ops.reports" ng-disabled="_loading"> Reports <br>
+                  <input type="checkbox" ng-model="key.allowed_ops.admin" ng-disabled="_loading"> Admin <br>
+                </div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <a ui-sref="^" class="btn btn-default">
+                <i class="glyphicon glyphicon-remove"></i>&nbsp;
+                Cancel
+              </a>
+              <button class="btn btn-success"
+                      ng-disabled="_loading || editForm.$invalid"
+                      ng-click="update()">
+                <i class="glyphicon glyphicon-ok"></i>&nbsp;
+                Update
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

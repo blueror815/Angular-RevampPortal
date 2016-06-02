@@ -1,0 +1,88 @@
+<div class="container" ui-view="page">
+    <div class="row">
+        <div class="col-sm-12">
+
+        </div>
+    </div>
+
+    <div class="row" ng-init="initBillingPlans()">
+        <div class="col-md-12">
+            <div class="panel panel-default center-block">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="text-center col-md-4">
+                            <img class="img-responsive" src="images/logo_color.png" alt="Logo"/>
+                        </div>
+                        <div class="col-md-4 text-center "><h1 class="signup">Sign Up</h1></div>
+                    </div>
+
+                </div>
+
+                <div class="panel-heading">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="text-center">
+                                <h4 class="">
+                                    The world of mobile app and web acceleration is just a few minutes away.<br> Please select your RevAPM billing plan:
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel-body ">
+                        <div class="row">
+                            <div class="col-md-3  text-center " ng-repeat="item in records | orderBy: 'monthly_fee'">
+                                <h2>
+                                    {{item.name}}
+                                </h2>
+                                <h1>
+                                    ${{item.monthly_fee}}/mon
+                                </h1>
+                                <hr>
+                                <div class="billing-plan-description">{{item.description}}</div>
+                                <hr>
+                                <h4>
+                                    Overage Charges
+                                </h4>
+                                <div ng-repeat="service in item.services">
+                                    <div>${{service.cost}} per {{service.measurement_unit}}</div>
+                                </div>
+                                <hr>
+                                <button  ng-click="chooseBillingPlan(item.id, item.name)"
+                                   class="btn btn-primary btn-lg">Subscribe</button>
+                            </div>
+                            <div class="col-md-3  text-center " style="max-height: 280px">
+                                <h2>
+                                    Enterprise
+                                </h2>
+                                <h1>
+                                    Custom
+                                </h1>
+                                <hr>
+                                <div>Get a billing plan customized to meet your specific needs</div>
+                                <div>
+                                    <div></div>
+                                </div>
+                                <hr>
+                                <a href="https://www.revapm.com/contact-us/"
+                                         class="btn btn-primary btn-lg">Contact Us</a>
+                            </div>
+
+                      </div>
+
+                </div>
+                <div class="panel-footer text-center">
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                            <div class="">
+                                <p class="lead">Not sure which plan to choose? </p><a href="https://www.revapm.com/contact-us/" class="btn btn-info btn-lg">Talk to an expert</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

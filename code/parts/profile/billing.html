@@ -1,0 +1,149 @@
+<script type="text/ng-template" id="confirmModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to change billing plan to
+    <strong>{{model.name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<script type="text/ng-template" id="confirmModalUpgrade.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body" ng-if="model.credit_card">
+    <p>Changing billing plan will have the following effects:
+      <br>
+      <ul>
+        <li>A prorated credit of approximately <strong>{{model.migration.prorated_adjustment_in_cents| AbsUnit| MonetaryUnit|currency}}</strong> will be applied for the current billing plan</li>
+        <li>The pro-rated credit for prior period charges will include any line-item charges from that period</li>
+        <li>A charge for the full amount of the new billing plan will be applied</li>
+        <li>A charge for the full amount of all line-item charges will be applied. All metered line-items (traffic, requests) will be reset to zero.</li>
+        <li>The billing period start date will be reset to today's date</li>
+      </ul>
+    </p>
+    <p class="text-center">
+      Please confirm that you want to change your billing plan to
+      <strong>{{model.plan.name}}</strong>.
+    </p>
+  </div>
+  <div class="modal-body" ng-if="!model.credit_card">
+    <p> It looks like we don’t have your credit card details on file. Please provide the information before changing to another billing plan.</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" type="button" ng-click="ok()" ng-if="model.credit_card">OK</button>
+  </div>
+</script>
+<div class="container-fluid" ui-view="page">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+                Manage Billing Plan
+            </h2>
+    </div>
+  </div>
+  <div class="row" ng-init="initBillingInfo()">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading" ng-if="!userService.isAdmin()">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <a ng-disabled="_loading" ui-sref="index.accountSettings.users" class="btn btn-default">
+                  <i class="glyphicon glyphicon-arrow-left"></i>&nbsp; Back
+                </a>
+              </div>
+              <div class="pull-left">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <!-- <div app-select ng-model="application" on-select="reloadDirs()"></div> -->
+                    <ui-select ng-model="account" theme="select2" ng-disabled="_loading" on-select="onAccountSelect($model)" style="min-width: 300px;">
+                      <ui-select-match placeholder="Select Account">{{$select.selected.acc_name}}</ui-select-match>
+                      <ui-select-choices repeat="item in accounts | filter: {acc_name: $select.search}">
+                        <div ng-bind-html="item.acc_name|highlight: $select.search"></div>
+                      </ui-select-choices>
+                    </ui-select>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--  <div class="panel-body">
+            <table class="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th ng-repeat="item in records | orderBy: 'monthly_fee'">
+                  <p>{{item.name}}</p>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="service in records[1].services">
+                <td>{{service.code_name}}</td>
+                <td ng-repeat="plan in records">
+                  {{plan.services[$parent.$index].included}}
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td ng-repeat="item in records | orderBy: 'monthly_fee'">
+                  <p>
+                    ${{item.monthly_fee}}/mon
+                  </p>
+                  <button ng-disabled="_loading" ng-show="item.id !== account.plan_id" ng-click="chooseBillingPlan(item, account)" class="btn btn-primary btn-sm">
+                    <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i> Subscribe
+                  </button>
+                  <button ng-show="item.id === account.plan_id" ng-click="chooseBillingPlan(item.id, account)" class="btn btn-info btn-sm" disabled>
+                    <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i> Current
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div> -->
+        <div class="panel-body" style="padding-top: 40px;">
+          <div class="alert alert-info" ng-if="_loading">
+            <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp; Loading...
+          </div>
+          <div class="row" ng-if="records.length > 0">
+            <div class="col-md-3  text-center" ng-repeat="item in records | orderBy: 'monthly_fee'">
+              <div class="billing-plan" ng-class="{'current':item.id === account.plan_id}">
+                <div class="billing-plan-header">
+                  <h2 class="billing-plan-title">{{item.name}}</h2>
+                </div>
+                <div class="billing-plan-price">
+                  <h1 class=""><span class="billing-plan-ammount">${{item.monthly_fee}}</span>/mon</h1>
+                </div>
+                <div class="billing-plan-details">
+                  <div class="billing-plan-description">{{item.description}}</div>
+                  <h4>Overage Charges</h4>
+                  <div class="billing-plan-services" ng-repeat="service in item.services">
+                    <div>${{service.cost | number:2}} per {{service.measurement_unit}}</div>
+                  </div>
+                </div>
+                <hr>
+                <footer class="billing-plan-action">
+                  <!--   <button href="" ng-click="chooseBillingPlan(item)" class="btn btn-success btn-lg">Subscribe</button> -->
+                  <button ng-disabled="_loading" ng-show="item.id !== account.plan_id" ng-click="chooseBillingPlan(item, account)" class="btn btn-success btn-lg">
+                    <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i> Subscribe
+                  </button>
+                  <button ng-show="item.id === account.plan_id" ng-click="chooseBillingPlan(item.id, account)" class="btn btn-success btn-lg" disabled>
+                    <i class="glyphicon glyphicon-refresh spin" ng-if="_loading"></i> Your Current Plan
+                  </button>
+                </footer>
+              </div>
+            </div>
+            <hr/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

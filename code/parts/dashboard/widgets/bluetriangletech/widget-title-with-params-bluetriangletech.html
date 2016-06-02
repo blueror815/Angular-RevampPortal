@@ -1,0 +1,32 @@
+<h3 class=panel-title>{{definition.title}}
+  <span ng-if="!!definition.config.domain">
+      (<strong>{{definition.config.domain.domain_name}}</strong>)
+  </span>
+ <span class="pull-right">
+<a href title="Reload Widget Content" ng-if="widget.reload" ng-click="reload()">
+<i class="glyphicon glyphicon-refresh"></i>
+</a>
+<a href title="Change Widget Location" class="adf-move" ng-if="editMode"> <i class="glyphicon glyphicon-move"></i> </a>
+ <a href title="collapse widget" ng-show="options.collapsible && !widgetState.isCollapsed" ng-click="widgetState.isCollapsed = !widgetState.isCollapsed">
+ <i class="glyphicon glyphicon-minus"></i>
+ </a>
+   <a href title="Expand Widget" ng-show="options.collapsible && widgetState.isCollapsed" ng-click="widgetState.isCollapsed = !widgetState.isCollapsed">
+   <i class="glyphicon glyphicon-plus"></i>
+   </a>
+     <a href title="Edit Widget Configuration" ng-click="edit()" ng-if="editMode">
+     <i class="glyphicon glyphicon-cog"></i>
+     </a>
+     <a href title="Fullscreen Widget" ng-click=openFullScreen() ng-show="options.maximizable"> <i class="glyphicon glyphicon-fullscreen"></i>
+      </a>
+       <a href title="Remove Widget" ng-click="remove()" ng-if="editMode"> <i class="glyphicon glyphicon-remove"></i>
+        </a>
+       </span>
+</h3>
+<!-- TODO: create special filter like proxi-trafic -->
+<small ng-if="definition.config.filters.count_last_day && (definition.config.filters.count_last_day === '1')">Last {{definition.config.filters.count_last_day}} Day</small>
+<small ng-if="definition.config.filters.count_last_day !== '1'">Last {{definition.config.filters.count_last_day}} Days</small>
+ &nbsp;
+<small ng-if="definition.config.filters.country!='-' && !!definition.config.filters.country ">Country: {{definition.config.filters.country}}   &nbsp;</small>
+
+
+

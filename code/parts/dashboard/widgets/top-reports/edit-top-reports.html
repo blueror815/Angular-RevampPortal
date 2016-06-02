@@ -1,0 +1,25 @@
+<form role="form">
+  <div class="form-group">
+    <label for="domain">Domain</label>
+    <div domain-select id="domain" ng-model="domain" on-select="onDomainSelected()" select-one="true"></div>
+  </div>
+  <div class="form-group">
+    <label for="domain">Filters</label>
+  </div>
+  <div class="form-inline">
+    <div class="form-group">
+      <select class="form-control fixed" ng-model="config.filters.count_last_hours" ng-disabled="!domain">
+        <option value="1">Last 1 Hour</option>
+        <option value="6">Last 6 Hours</option>
+        <option value="12">Last 12 Hours</option>
+        <option value="24">Last 24 Hours</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <select id="country" class="form-control fixed" ng-model="config.filters.country" ng-disabled="!domain">
+        <option value="-">All Countries</option>
+        <option ng-repeat="(key, item) in refCountries" value="{{key}}">{{item}}</option>
+      </select>
+    </div>
+  </div>
+</form>

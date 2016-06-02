@@ -1,0 +1,126 @@
+<!-- Note that element contain ui-view child page will be added here -->
+<script type="text/ng-template" id="confirmModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete key
+    <strong>{{model.key_name}}</strong>?
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" type="button" ng-click="ok()">OK</button>
+  </div>
+</script>
+<div class="container-fluid" ui-view="page">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 class="pull-left page-title">
+        API Keys List
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <button ng-click="openCreateDialog()" class="btn btn-success" ng-disabled="_loading">
+                  <i class="glyphicon glyphicon-plus"></i>&nbsp; Add New API Key
+                </button>
+              </div>
+              <div class="pull-right">
+                <list-filter></list-filter>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-info" ng-if="records.length == 0 && !_loading">
+            Currently you don't have any API keys registered in the system. You can click on "Add New API Key" button above to add an API key.
+          </div>
+          <div class="alert alert-info" ng-if="_loading">
+            <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>&nbsp; Loading...
+          </div>
+          <crud-pagination></crud-pagination>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <a href="" ng-click="order('key_name')">Name</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'key_name'" ng-class="{reverse: filter.key_name}"></span>
+                </th>
+                <th>
+                  <a href="" ng-click="order('key')">API Key</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'key'" ng-class="{reverse: filter.key}"></span>
+                </th>
+                <th>
+                  <a href="" ng-click="order('updated_at')">Last Update</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'updated_at'" ng-class="{reverse: filter.updated_at}"></span>
+                </th>
+                <!--<th class="thin">-->
+                <!--<a href="" ng-click="order('read_only_status')">Read Only</a>-->
+                <!--<span class="sortorder" ng-show="filter.predicate === 'read_only_status'" ng-class="{reverse: filter.read_only_status}"></span>-->
+                <!--</th>-->
+                <!--<th>-->
+                <!--<a class="thin" href="" ng-click="order('active')">Active</a>-->
+                <!--<span class="sortorder" ng-show="filter.predicate === 'active'" ng-class="{reverse: filter.active}"></span>-->
+                <!--</th>-->
+                <th class="actions">Actions</th>
+                <th class="account" ng-if="auth.isReseller() ||  auth.isRevadmin()">
+                  <a href="" ng-click="order('companyName')">Account</a>
+                  <span class="sortorder" ng-show="filter.predicate === 'companyName'" ng-class="{reverse: filter.reverse}"></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="item in filteredRecords | limitTo:filter.limit:filter.skip track by $index">
+                <td>
+                  <a ui-sref="index.accountSettings.keys.edit({id: item.id})" ng-if="!item.loading" uib-tooltip="Edit API Key">
+                  {{item.key_name}}
+                </a>
+                </td>
+                <td>
+                  <button class="btn btn-primary" clipboard text="item.key" on-copied="copyCallback()" on-error="copyCallback(err)" style="vertical-align: initial;" uib-tooltip="Click to copy the key to the clipboard" tooltip-placement="top"><i class="fa fa-files-o"></i></button>
+                  <button class="btn btn-primary" ng-click="switchKeyVisibility(item)" ng-hide="item.showKey" style="vertical-align: initial;">Show API Key</button>
+                  <input ng-if="item.showKey" ng-blur="switchKeyVisibility(item)" class="form-control" value="{{item.key}}" style="width: 300px; display: inline-block; position: absolute; z-index: 999; margin-left: 4px;" focus-me="item.showKey">
+                </td>
+                <td>{{ getRelativeDate(item.updated_at) }}</td>
+                <!--<td>-->
+                <!--<i class="glyphicon pointer" uib-tooltip="Toggle active status" ng-hide="item.loading" ng-click="toggleProperty(item, 'read_only_status')" ng-class="item.read_only_status && 'glyphicon-check' || 'glyphicon-unchecked'"></i>-->
+                <!--</td>-->
+                <!--<td>-->
+                <!--<i class="glyphicon pointer" uib-tooltip="Toggle active status" ng-hide="item.loading" ng-click="toggleProperty(item, 'active')" ng-class="item.active && 'glyphicon-check' || 'glyphicon-unchecked'"></i>-->
+                <!--</td>-->
+                <td class="actions">
+                  <i class="glyphicon glyphicon-refresh spin" ng-if="item.loading"></i>
+                  <a ui-sref="index.accountSettings.keys.edit({id: item.id})" ng-if="!item.loading" uib-tooltip="Edit API Key">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                  </a>
+                  <a href="" ng-if="!item.loading" ng-click="deleteKey(item)" uib-tooltip="Delete API Key">
+                    <i class="glyphicon glyphicon-trash"></i>
+                  </a>
+                </td>
+                <td ng-if="auth.isReseller() ||  auth.isRevadmin()">
+                  <div class="company-name">{{item.companyName}}</div>
+                </td>
+              </tr>
+              <!--<tr class="disabled loading">-->
+              <!--<td>John</td>-->
+              <!--<td>Doe</td>-->
+              <!--<td>Monday, Aug 10, 2015, 8:31 PM</td>-->
+              <!--<td class="actions">-->
+              <!--<i class="glyphicon glyphicon-refresh spin"></i>-->
+              <!--</td>-->
+              <!--</tr>-->
+            </tbody>
+          </table>
+          <hr>
+          <crud-pagination></crud-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

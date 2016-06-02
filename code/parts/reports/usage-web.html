@@ -1,0 +1,443 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Usage Report</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default usage-report">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+
+                <form class="form-inline">
+                  <div class="form-group">
+
+                    <ui-select ng-model="selected.val"
+                               theme="select2"
+                               ng-disabled="_loading"
+                               on-select="onAccountSelect($model)"
+                               style="min-width: 300px;" >
+                      <ui-select-match placeholder="Select Account">{{$select.selected.acc_name}}</ui-select-match>
+                      <ui-select-choices repeat="item in accounts | filter: {acc_name: $select.search}">
+                        <div ng-bind-html="item.acc_name|highlight: $select.search"></div>
+                      </ui-select-choices>
+                    </ui-select>
+
+                  </div>
+
+                  <div class="form-group">
+                    <div class="dropdown">
+                      <a class="dropdown-toggle" id="month-dd" role="button" data-toggle="dropdown" ng-disabled="_loading">
+                        <div class="input-group">
+                          <input type="text" class="form-control" data-ng-model="month_year_symbol">
+                          <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                        </div>
+                      </a>
+                      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                        <datetimepicker
+                          data-ng-model="month_year"
+                          data-datetimepicker-config="{ dropdownSelector: '#month-dd', startView: 'month', minView: 'month', modelType: 'milliseconds' }"
+                          data-on-set-time="onTimeSet(newDate)"
+                          />
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <button class="btn btn-info" ng-click="onUpdate()" ng-disabled="_loading || !selected.val">
+                      <i class="glyphicon glyphicon-refresh"></i>&nbsp;
+                      Update Report
+                    </button>
+                  </div>
+
+                </form>
+              </div>
+
+              <div class="pull-right" ng-if="_loading" >
+                <i style="font-size: 34px;" class="glyphicon glyphicon-refresh spin"></i>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-body">
+
+          <div class="row">
+
+            <div class="col-md-4">
+
+              <h4>Domains</h4>
+
+              <form class="form-horizontal">
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label" >Active</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.domains.active }}</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label" >Deleted</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.domains.deleted }}</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label" >SSL Enabled</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.domains.ssl_enabled }}</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label">Total</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.domains.total }}</div>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+
+            <div class="col-md-4">
+
+              <h4>Mobile Apps</h4>
+
+              <form class="form-horizontal">
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label" >Active</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.applications.active }}</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label" >Deleted</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.applications.deleted }}</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label">Total</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.applications.total }}</div>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+
+            <div class="col-md-4">
+
+              <h4>API Keys</h4>
+
+              <form class="form-horizontal">
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label" >Active</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.api_keys.active }}</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label" >Inactive</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.api_keys.inactive }}</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label">Total</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.api_keys.total }}</div>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+
+          </div>
+          <hr>
+
+          <div class="row">
+
+            <div class="col-md-4">
+
+              <h4>Traffic Total</h4>
+
+              <form class="form-horizontal">
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label" >Hits</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.traffic.count }}</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label" >Sent</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.traffic.sent_bytes }}</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label">Received</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.traffic.received_bytes }}</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label">BW Sent</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.traffic.billable_sent_bps }}</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label">BW Received</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.traffic.billable_received_bps }}</div>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+
+            <div class="col-md-4">
+
+              <h4>Edge Cache Usage</h4>
+
+              <form class="form-horizontal">
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label" >HIT</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.cache_hits.HIT }}</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-6 control-label" >MISS</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ report.cache_hits.MISS }}</div>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+
+            <div class="col-md-4">
+
+              <h4>HTTP/HTTPS Requests</h4>
+
+              <form class="form-horizontal">
+
+                <div class="form-group" ng-repeat="( port, hits ) in report.port_hits">
+                  <label class="col-sm-6 control-label" >{{ port === '80' ? 'HTTP' : 'HTTPS' }}</label>
+                  <div class="col-sm-6">
+                    <div class="form-control text-right">{{ hits }}</div>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+
+          <div ng-if="showTraffic()">
+
+            <div ng-if="showDomainsUsage()">
+
+              <hr>
+              <h4>Traffic Total Per Billing Zone</h4>
+              <table class="table table-stripped table-condensed">
+                <thead>
+                  <tr>
+                    <th style="width:28%;">Zone</th>
+                    <th class="text-right">Hits</th>
+                    <th class="text-right">Traffic sent</th>
+                    <th class="text-right">Traffic received</th>
+                    <th class="text-right">BW sent</th>
+                    <th class="text-right">BW received</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="( zone, traffic ) in report.traffic_per_billing_zone">
+                    <td>{{zone}}</td>
+                    <td class="text-right">{{traffic.count}}</td>
+                    <td class="text-right">{{traffic.sent_bytes}}</td>
+                    <td class="text-right">{{traffic.received_bytes}}</td>
+                    <td class="text-right">{{traffic.billable_sent_bps}}</td>
+                    <td class="text-right">{{traffic.billable_received_bps}}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <hr>
+              <h4>Domains Usage</h4>
+
+              <table class="table table-stripped table-condensed">
+                <thead>
+                  <tr>
+                    <th style="width:30px;"></th>
+                    <th style="width:25%;">Domain</th>
+                    <th class="text-right">Hits</th>
+                    <th class="text-right">Traffic sent</th>
+                    <th class="text-right">Traffic received</th>
+                    <th class="text-right">BW sent</th>
+                    <th class="text-right">BW received</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat-start="( domain, usage ) in report.domains_usage" name="{{domain}}">
+                    <td>
+                      <a ng-if="usage.count !== '0'" role="button" data-toggle="collapse" data-target="#domain-{{$index}}" >
+                        <i class="glyphicon glyphicon-plus-sign"></i>
+                      </a>
+                    </td>
+                    <td>{{domain}}</td>
+                    <td class="text-right">{{usage.count}}</td>
+                    <td class="text-right">{{usage.sent_bytes}}</td>
+                    <td class="text-right">{{usage.received_bytes}}</td>
+                    <td class="text-right">{{usage.billable_sent_bps}}</td>
+                    <td class="text-right">{{usage.billable_received_bps}}</td>
+                  </tr>
+                  <tr ng-repeat-end id="domain-{{$index}}" class="panel-collapse collapse" role="tabpanel" name="{{domain}}">
+                    <td colspan="7" style="background-color: #d0d0e0; padding-left: 25px;">
+                      <div class="panel-body" style="padding: 10px; padding-bottom: 0;">
+
+                        <div class="row">
+
+                          <div class="col-md-6">
+
+                            <h4>Edge Cache Usage</h4>
+
+                            <form class="form-horizontal">
+
+                              <div class="form-group">
+                                <label class="col-sm-6 control-label" >HIT</label>
+                                <div class="col-sm-6">
+                                  <div class="form-control text-right" id="cache_hit">{{ usage.cache_hits.HIT }}</div>
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label class="col-sm-6 control-label" >MISS</label>
+                                <div class="col-sm-6">
+                                  <div class="form-control text-right" id="cache_miss">{{ usage.cache_hits.MISS }}</div>
+                                </div>
+                              </div>
+
+                            </form>
+
+                          </div>
+
+                          <div class="col-md-6">
+
+                            <h4>HTTP/HTTPS Requests</h4>
+
+                            <form class="form-horizontal">
+
+                              <div class="form-group" ng-repeat="( port, hits ) in usage.port_hits">
+                                <label class="col-sm-6 control-label" >{{ port === '80' ? 'HTTP' : 'HTTPS' }}</label>
+                                <div class="col-sm-6">
+                                  <div class="form-control text-right" id="port_{{port}}">{{ hits }}</div>
+                                </div>
+                              </div>
+
+                            </form>
+
+                          </div>
+                        </div>
+
+                        <hr>
+                        <h4>Traffic Per Billing Zone</h4>
+                        <table class="table table-stripped table-condensed">
+                          <thead>
+                            <tr>
+                              <th>Zone</th>
+                              <th class="text-right">Hits</th>
+                              <th class="text-right">Traffic sent</th>
+                              <th class="text-right">Traffic received</th>
+                              <th class="text-right">BW sent</th>
+                              <th class="text-right">BW received</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="( zone, traffic ) in usage.traffic_per_billing_zone">
+                              <td>{{zone}}</td>
+                              <td class="text-right">{{traffic.count}}</td>
+                              <td class="text-right">{{traffic.sent_bytes}}</td>
+                              <td class="text-right">{{traffic.received_bytes}}</td>
+                              <td class="text-right">{{traffic.billable_sent_bps}}</td>
+                              <td class="text-right">{{traffic.billable_received_bps}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+
+            <div ng-if="showAccounts()">
+              <hr>
+              <h4>Accounts Usage</h4>
+
+              <table datatable="ng" dt-options="accountsDtOptions" dt-column-defs="colDefs" class="table table-stripped table-condensed order-column">
+                <thead>
+                  <tr>
+                    <th style="width: 20%">Account</th>
+                    <th class="text-right">Hits</th>
+                    <th class="text-right">Traffic Sent</th>
+                    <th class="text-right">Traffic Received</th>
+                    <th class="text-right">BW Sent</th>
+                    <th class="text-right">BW Received</th>
+                    <th class="text-right">Active Domains</th>
+                    <th class="text-right">Active Apps</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="account in report.accounts">
+                    <td><a ng-click="onAccountClick('{{account.acc_id}}')">{{account.acc_name}}</a></td>
+                    <td class="text-right">{{account.count}}</td>
+                    <td class="text-right">{{account.sent_bytes}}</td>
+                    <td class="text-right">{{account.received_bytes}}</td>
+                    <td class="text-right">{{account.billable_sent_bps}}</td>
+                    <td class="text-right">{{account.billable_received_bps}}</td>
+                    <td class="text-right">{{account.active_domains || 0}}</td>
+                    <td class="text-right">{{account.active_apps || 0}}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
